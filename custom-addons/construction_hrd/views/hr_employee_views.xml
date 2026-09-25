@@ -8,8 +8,53 @@
             <xpath expr="//notebook" position="inside">
                 <page string="CEMS / Site" name="cems_site">
                     <group>
-                        <group string="Site Assignment">
-                            <field name="cems_project_id" string="Site Project"/>
+                        <group string="Login Access Type">
+                            <field name="cems_access_type" widget="radio"/>
+                            <field name="cems_access_actual" string="Current Login Access"/>
+                            <field name="cems_access_mismatch" invisible="1"/>
+                            <div class="text-warning" invisible="not cems_access_mismatch" colspan="2">
+                                Access Type does not match the linked user.
+                                Click <strong>Apply Access Type</strong> to fix.
+                            </div>
+                            <div class="text-muted" colspan="2">
+                                <p class="mb-1">
+                                    <strong>Internal Team</strong> — back office (/web):
+                                    PM, Site Engineer, HRD, Admin.
+                                </p>
+                                <p class="mb-0">
+                                    <strong>Portal Worker only</strong> — website (/my) only:
+                                    site workers for attendance / shared projects.
+                                    They cannot open Odoo back office.
+                                </p>
+                            </div>
+                        </group>
+                        <group string="Apply">
+                            <button name="action_cems_apply_access_type"
+                                    type="object"
+                                    string="Apply Access Type"
+                                    class="btn-primary"
+                                    groups="base.group_erp_manager,hr.group_hr_manager"
+                                    invisible="not cems_access_type"/>
+                            <div class="text-muted" colspan="2">
+                                Requires Work Email. Portal Worker creates/converts
+                                a portal user and links Related User. Internal Team
+                                opens Create User if none exists, or upgrades a
+                                portal user to Internal.
+                            </div>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Site (from Project Site Team)">
+                            <field name="cems_project_id" string="Site Project" readonly="1"/>
+                            <field name="cems_project_ids" string="All Site Projects"
+                                     widget="many2many_tags" readonly="1"/>
+                            <div class="text-muted" colspan="2">
+                                Assign this person on
+                                <strong>Project → CEMS / Geofence → Site Team</strong>
+                                (after Related User is linked via Access Type).
+                            </div>
+                        </group>
+                        <group string="Workforce">
                             <field name="cems_trade" string="Trade"/>
                             <field name="cems_hire_type" string="Hire Type"/>
                         </group>

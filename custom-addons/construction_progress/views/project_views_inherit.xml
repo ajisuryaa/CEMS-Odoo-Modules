@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!--
-        Inherit project.project form — Geofence + Progress & EVM.
-        Explicit string= on every CEMS field so labels stay clear in the UI.
+        Inherit project.project form — Geofence + Site Team + Progress & EVM.
     -->
     <record id="view_project_form_cems" model="ir.ui.view">
         <field name="name">project.project.form.cems</field>
@@ -17,10 +16,27 @@
                             <field name="geofence_longitude" string="Geofence Longitude"/>
                             <field name="geofence_radius" string="Geofence Radius (m)"/>
                         </group>
-                        <group string="Assignment">
-                            <field name="cems_engineer_ids" string="Site Engineers" widget="many2many_tags"/>
+                        <group string="Site Assignment">
+                            <field name="cems_member_ids"
+                                     string="Site Team"
+                                     widget="many2many_tags"
+                                     options="{'no_quick_create': True}"
+                                     placeholder="Workers, engineers, portal users…"/>
+                            <field name="cems_engineer_ids"
+                                     string="Site Engineers"
+                                     widget="many2many_tags"
+                                     options="{'no_quick_create': True}"
+                                     placeholder="Internal Site Engineers…"/>
                         </group>
                     </group>
+                    <div class="text-muted">
+                        Assign people on <strong>Site Team</strong> only.
+                        Task assignees and portal attendance use this list.
+                        Members are <strong>auto-shared</strong> so the project
+                        appears on their portal <em>/my/projects</em>
+                        (visibility set to Invited portal users if needed).
+                        Site Engineers get backend access rules and are auto-added to Site Team.
+                    </div>
                 </page>
                 <page string="Progress &amp; EVM" name="cems_evm">
                     <group>

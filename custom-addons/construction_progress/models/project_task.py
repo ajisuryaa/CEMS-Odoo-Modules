@@ -35,6 +35,46 @@ class ProjectTask(models.Model):
         default=True,
         help='If False, this task is excluded from weightage / P_total sums.',
     )
+    # Used by assignee domain on the form (Site Team of the project)
+    cems_allowed_user_ids = fields.Many2many(
+        comodel_name='res.users',
+        compute='_compute_cems_allowed_user_ids',
+        string='Allowed Assignees',
+    )
+
+    @api.depends('project_id', 'project_id.cems_member_ids')
+    def _compute_cems_allowed_user_ids(self):
+        for task in self:
+            task.cems_allowed_user_ids = task.project_id.cems_member_ids
+
+    @api.onchange('project_id')
+    def _onchange_project_id_cems_assignees(self):
+        """Drop assignees that are not on the new project's Site Team."""
+        if not self.project_id:
+            return
+        allowed = self.project_id.cems_member_ids
+        if allowed:
+            self.user_ids = self.user_ids & allowed
+
+    @api.constrains('user_ids', 'project_id')
+    def _check_cems_assignees_in_site_team(self):
+        for task in self:
+            if not task.project_id or not task.user_ids:
+                continue
+            allowed = task.project_id.cems_member_ids
+            if not allowed:
+                # No Site Team configured yet — do not block (setup phase)
+                continue
+            invalid = task.user_ids - allowed
+            if invalid:
+                raise ValidationError(
+                    self.env._(
+                        'Assignees must be on the project Site Team. '
+                        'Invalid: %(names)s. '
+                        'Add them under Project → CEMS / Geofence → Site Team.',
+                        names=', '.join(invalid.mapped('name')),
+                    )
+                )
 
     @api.constrains('weightage_pct', 'physical_progress_pct')
     def _check_pct_range(self):

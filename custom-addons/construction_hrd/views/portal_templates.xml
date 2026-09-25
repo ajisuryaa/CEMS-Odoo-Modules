@@ -52,8 +52,8 @@
 
                 <div t-if="not employee" class="alert alert-warning">
                     Your portal user is not linked to an employee. Ask an administrator to set
-                    <strong>Related User</strong> on your employee record and assign a
-                    <strong>Site Project</strong>.
+                    <strong>Related User</strong> on your employee record, and add you to the
+                    project <strong>Site Team</strong>.
                 </div>
 
                 <t t-else="">
@@ -81,8 +81,10 @@
                     </div>
 
                     <div t-if="not project" class="alert alert-danger">
-                        Assign a Site Project on the employee (CEMS / Site) and configure
-                        geofence on the project before using portal attendance.
+                        You are not on any project Site Team, or geofence is not configured.
+                        Ask your supervisor to add your user under
+                        <strong>Project → CEMS / Geofence → Site Team</strong>
+                        and set the project geofence.
                     </div>
 
                     <form t-if="project and not open_attendance"

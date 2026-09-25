@@ -10,11 +10,17 @@ Juga: [AGENTS.md pusat](../../document_project/pt_dynatech_batam/AGENTS.md) ·
 ## Scope Phase 2
 
 - Depends: `hr`, `hr_attendance`, `portal`, `website`, **`construction_progress`**
-- Inherit `hr.employee` → tautkan ke `project.project`
+- Inherit `hr.employee` → Site Team projects + **Access Type** (Internal / Portal Worker)
 - Portal check-in/out: GPS + selfie; **Haversine** vs geofence proyek (field dari Progress)
 - `construction.daily.labor` (+ lines)
 - `construction.gate.pass` (fondasi)
 - Pakai `res.groups` CEMS dari `construction_progress` (jangan duplikasi group)
+
+## Access Type (employee)
+
+- Field `cems_access_type`: `internal` | `portal`
+- Tombol **Apply Access Type** → portal-only user (no `/web`) atau Internal User
+- `cems_access_actual` menampilkan akses login nyata Related User
 
 ## Jangan kerjakan di Phase 2
 

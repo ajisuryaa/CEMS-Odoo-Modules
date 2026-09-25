@@ -1,6 +1,6 @@
 {
     'name': 'CEMS Construction Progress',
-    'version': '19.0.1.0.0',
+    'version': '19.0.1.2.0',
     'category': 'Construction',
     'summary': 'WBS, geofence, EVM foundation for CEMS',
     'description': """
@@ -10,8 +10,8 @@ Foundation module for PT Dynatech Batam Construction & Engineering
 Management Suite (CEMS):
 
 * CEMS security groups (res.groups)
-* Project geofence fields (lat / long / radius)
-* Task WBS, weightage, physical progress
+* Project geofence + Site Team assignment
+* Task WBS, weightage, physical progress (assignees limited to Site Team)
 * Project-level EVM (BAC, PV, EV, SPI, P_total)
 * Record rules for multi-project isolation
     """,
@@ -34,4 +34,5 @@ Management Suite (CEMS):
     'installable': True,
     'application': True,
     'auto_install': False,
+    'post_init_hook': 'post_init_hook',
 }

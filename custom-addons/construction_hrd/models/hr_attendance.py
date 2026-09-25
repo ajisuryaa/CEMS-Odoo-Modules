@@ -95,7 +95,15 @@ class HrAttendance(models.Model):
         """Create check-in for portal worker after geofence validation."""
         if not employee:
             raise UserError(self.env._('No employee linked to this user.'))
-        project = employee.cems_project_id
+        project = employee.cems_get_attendance_project()
+        if not project:
+            raise UserError(
+                self.env._(
+                    'You are not on any project Site Team. '
+                    'Ask your supervisor to add you under '
+                    'Project → CEMS / Geofence → Site Team.'
+                )
+            )
         _ok, distance = self.cems_validate_geofence(project, latitude, longitude)
 
         # Close any open attendance first (safety)

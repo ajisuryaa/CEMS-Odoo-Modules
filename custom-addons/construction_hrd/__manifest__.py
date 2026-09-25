@@ -1,6 +1,6 @@
 {
     'name': 'CEMS Construction HRD',
-    'version': '19.0.1.0.0',
+    'version': '19.0.1.2.0',
     'category': 'Human Resources',
     'summary': 'Site workforce, geofence attendance portal, daily labor & gate pass',
     'description': """
@@ -8,7 +8,7 @@ CEMS Phase 2 — Construction HRD
 ===============================
 Site workforce module for PT Dynatech Batam CEMS:
 
-* Link employees to construction projects (from construction_progress)
+* Site assignment via project Site Team (construction_progress)
 * Geofenced selfie attendance via Portal (Haversine vs project geofence)
 * Daily Labor Report (DLR) — headcount by trade / hire type
 * Gate Pass foundation model

@@ -7,7 +7,19 @@ class ProjectProject(models.Model):
 
     _inherit = 'project.project'
 
-    # --- Assignment (record-rule isolation) ---
+    # --- Site team (source of truth for assignment) ---
+    cems_member_ids = fields.Many2many(
+        comodel_name='res.users',
+        relation='project_cems_member_rel',
+        column1='project_id',
+        column2='user_id',
+        string='Site Team',
+        help='All people assigned to this site. Task assignees, portal '
+             'attendance, and /my/projects visibility use this list. '
+             'Members are auto-shared (followers + collaborators). '
+             'Assign here — not on the employee form.',
+    )
+    # --- Engineers subset (record-rule isolation for Site Engineer role) ---
     cems_engineer_ids = fields.Many2many(
         comodel_name='res.users',
         relation='project_cems_engineer_rel',
@@ -15,8 +27,8 @@ class ProjectProject(models.Model):
         column2='user_id',
         string='Site Engineers',
         domain="[('share', '=', False)]",
-        help='Users with Site Engineer role assigned to this project '
-             '(used by ir.rule isolation).',
+        help='Internal Site Engineers for backend isolation (ir.rule). '
+             'They are also added to Site Team automatically.',
     )
 
     # --- Geofence (consumed by construction_hrd Phase 2) ---
@@ -85,6 +97,57 @@ class ProjectProject(models.Model):
         help='Schedule Performance Index = EV / PV (0 if PV is 0).',
     )
 
+    def _cems_sync_engineers_into_members(self):
+        """Ensure every Site Engineer is also on the Site Team."""
+        for project in self:
+            missing = project.cems_engineer_ids - project.cems_member_ids
+            if missing:
+                project.cems_member_ids = [(4, uid) for uid in missing.ids]
+
+    def _cems_sync_site_team_portal_access(self):
+        """Auto-share Site Team on portal (/my/projects).
+
+        Odoo portal only lists projects when:
+        - privacy_visibility is ``invited_users`` or ``portal``, and
+        - the user's partner follows the project (message_partner_ids).
+
+        Collaborators unlock project-sharing task views for portal users.
+        """
+        for project in self.sudo():
+            members = project.cems_member_ids
+            if not members:
+                continue
+            partners = members.mapped('partner_id')
+            if members and project.privacy_visibility not in (
+                'invited_users',
+                'portal',
+            ):
+                # Invited-only: Site Team are the invitees (not all portal users)
+                project.write({'privacy_visibility': 'invited_users'})
+            if partners:
+                project.message_subscribe(partner_ids=partners.ids)
+            # Portal / shared partners → project.collaborator
+            share_partners = partners.filtered('partner_share') | members.filtered(
+                'share'
+            ).mapped('partner_id')
+            if share_partners:
+                project._add_collaborators(share_partners, limited_access=False)
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        projects = super().create(vals_list)
+        projects._cems_sync_engineers_into_members()
+        projects._cems_sync_site_team_portal_access()
+        return projects
+
+    def write(self, vals):
+        res = super().write(vals)
+        if 'cems_engineer_ids' in vals:
+            self._cems_sync_engineers_into_members()
+        if 'cems_member_ids' in vals or 'cems_engineer_ids' in vals:
+            self._cems_sync_site_team_portal_access()
+        return res
+
     @api.depends(
         'task_ids.weightage_pct',
         'task_ids.physical_progress_pct',
@@ -108,7 +171,6 @@ class ProjectProject(models.Model):
         """Server-side EVM: P_total, EV, SPI (Phase 1 formulas)."""
         for project in self:
             billable = project.task_ids.filtered(lambda t: t.is_wbs_billable)
-            # P_total (%) = Σ (W_i × P_i) where W_i and P_i are fractions of 100
             p_total = sum(
                 (t.weightage_pct / 100.0) * t.physical_progress_pct
                 for t in billable

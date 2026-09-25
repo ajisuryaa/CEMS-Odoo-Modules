@@ -5,7 +5,7 @@ Phase 2 site workforce module — integrates with **`construction_progress`** ge
 | | |
 |---|---|
 | **Technical name** | `construction_hrd` |
-| **Version** | `19.0.1.0.0` |
+| **Version** | `19.0.1.2.0` |
 | **Depends on** | `hr`, `hr_attendance`, `mail`, `portal`, `website`, **`construction_progress`** |
 | **Compatible with** | Odoo **19.0 Community** |
 
@@ -37,6 +37,9 @@ construction_progress  →  construction_hrd
 ## Quick setup
 
 1. On a **Project**: set Geofence lat / long / radius (Progress tab).
-2. On an **Employee**: CEMS / Site → Site Project + Related User (portal user).
+2. On an **Employee** → **CEMS / Site**:
+   - Set **Access Type** → **Portal Worker only** (or Internal Team)
+   - Click **Apply Access Type** (needs Work Email)
+   - Add their user to **Project → Site Team**
 3. Worker opens Portal → **Site Attendance** → allow GPS → selfie → Check In.
 4. Backend: **CEMS → Site HRD → Attendances / Daily Labor / Gate Passes**.

@@ -18,9 +18,9 @@ env/
 odoo/
 filestore/
 *.log
-odoo.conf
-*.conf
+/odoo.conf
 !odoo.conf.example
+!docker/odoo.conf
 
 # Secrets / env
 .env

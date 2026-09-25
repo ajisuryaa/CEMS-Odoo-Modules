@@ -15,6 +15,7 @@ Dokumen ini adalah **indeks acuan untuk AI/agent** agar memahami proyek **Odoo C
 | [08_phase1_construction_progress.md](./08_phase1_construction_progress.md) | Landasan AI Phase 1 — modul `construction_progress` |
 | [09_phase2_construction_hrd.md](./09_phase2_construction_hrd.md) | Landasan AI Phase 2 — modul `construction_hrd` |
 | [README_construction_progress.md](./README_construction_progress.md) | **Panduan pengguna** — install, run, cara pakai `construction_progress` |
+| [RUNNING.md](../../RUNNING.md) | **Cara jalankan proyek** — tanpa Docker (venv) & dengan Docker Compose |
 
 **Sumber:** `project PT.dynatech.docx` (SRS & Architecture Blueprint v1.1.0)  
 **Target:** Odoo 19 Community  
@@ -39,7 +40,7 @@ Ringkas:
 
 | Langkah | Perintah / aksi |
 |---------|-----------------|
-| Jalankan Odoo | `./odoo/odoo-bin -d cems_dev --addons-path=odoo/addons,odoo/odoo/addons,custom-addons` |
+| Jalankan Odoo | Lihat [RUNNING.md](../../RUNNING.md) — path addons: `cems_odoo/custom-addons` |
 | Install modul | Apps → **CEMS Construction Progress**, atau `-i construction_progress` |
 | Upgrade | `-u construction_progress --stop-after-init` |
 | Pakai | **CEMS → Projects/Tasks** — isi geofence, WBS, BAC/PV; assign role CEMS di Users |

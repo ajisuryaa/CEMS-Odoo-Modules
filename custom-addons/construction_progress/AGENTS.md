@@ -9,10 +9,17 @@ Juga: [AGENTS.md pusat](../../document_project/pt_dynatech_batam/AGENTS.md)
 ## Scope Phase 1 saja
 
 - `res.groups` CEMS
-- Inherit `project.project`: geofence + BAC/PV/EV/SPI/`P_total`
-- Inherit `project.task`: WBS, weightage, physical progress + constraint
-- Record rules isolasi (pakai `cems_engineer_ids`)
+- Inherit `project.project`: geofence + BAC/PV/EV/SPI/`P_total` + **Site Team** (`cems_member_ids`)
+- Inherit `project.task`: WBS, weightage, physical progress + assignees **hanya Site Team**
+- Record rules isolasi (pakai `cems_engineer_ids`; engineers auto masuk Site Team)
 - Odoo **19 Community**, depends: `project`, `hr_timesheet`
+
+## Assignment rule
+
+- Assign orang di **Project → CEMS / Geofence → Site Team** (bukan di employee form).
+- Task Assignees domain = Site Team.
+- Portal attendance resolve project dari Site Team membership.
+- Site Team **auto-share** ke portal: set `privacy_visibility` ke `invited_users` bila perlu, `message_subscribe` partner, dan `project.collaborator` untuk user portal — agar proyek muncul di `/my/projects`.
 
 ## Jangan kerjakan di Phase 1
 

@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!--
-        CEMS fields on task form: dedicated notebook page with visible labels.
-        Do NOT inject into the Deadline div (nolabel) — that hid field names.
+        CEMS fields on task form + restrict Assignees to project Site Team.
     -->
     <record id="view_task_form_cems" model="ir.ui.view">
         <field name="name">project.task.form.cems</field>
         <field name="model">project.task</field>
         <field name="inherit_id" ref="project.view_task_form2"/>
         <field name="arch" type="xml">
+            <xpath expr="//field[@name='user_ids']" position="before">
+                <field name="cems_allowed_user_ids" invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='user_ids']" position="attributes">
+                <attribute name="domain">[('id', 'in', cems_allowed_user_ids)]</attribute>
+                <attribute name="placeholder">Site Team members only</attribute>
+            </xpath>
             <xpath expr="//notebook" position="inside">
                 <page string="CEMS / WBS &amp; Progress" name="cems_wbs">
                     <group>

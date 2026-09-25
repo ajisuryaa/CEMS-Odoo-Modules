@@ -16,9 +16,12 @@ Monorepo for **PT Dynatech Batam** custom Odoo addons (CEMS) and project documen
 ```text
 cems_odoo/                          ← this Git repository root
 ├── README.md
+├── RUNNING.md                      ← how to run (venv + Docker)
 ├── .gitignore
 ├── LICENSE
 ├── odoo.conf.example
+├── docker-compose.yml
+├── docker/odoo.conf
 ├── custom-addons/                  ← put this path in Odoo addons_path
 │   ├── construction_progress/      ← Phase 1 — WBS, geofence, EVM, CEMS groups
 │   └── construction_hrd/           ← Phase 2 — portal attendance, DLR, gate pass
@@ -49,9 +52,11 @@ Docs index: [`document_project/pt_dynatech_batam/README.md`](./document_project/
 
 ---
 
-## Local setup
+## How to run
 
-Typical sibling layout on your machine:
+Full guide (venv **and** Docker): **[RUNNING.md](./RUNNING.md)**
+
+Typical sibling layout:
 
 ```text
 pmg-odoo/
@@ -60,19 +65,21 @@ pmg-odoo/
 └── cems_odoo/            # this repository
 ```
 
-1. Clone Odoo 19 and create a venv; install `odoo/requirements.txt`.
-2. Clone this repo as `cems_odoo` (or next to `odoo/`).
-3. Point `addons_path` at **`cems_odoo/custom-addons`** (see `odoo.conf.example`).
-4. Start Odoo, update apps list, install **CEMS Construction Progress**, then **CEMS Construction HRD**.
-
-Example:
+**Without Docker** (from `pmg-odoo/`):
 
 ```bash
-./odoo/odoo-bin -d cems_dev \
-  --addons-path=odoo/addons,odoo/odoo/addons,cems_odoo/custom-addons \
-  -i construction_progress,construction_hrd
+source venv/bin/activate
+./odoo/odoo-bin -d odoo \
+  --addons-path=odoo/addons,odoo/odoo/addons,cems_odoo/custom-addons
 ```
 
+**With Docker** (from `cems_odoo/`):
+
+```bash
+docker compose up -d
+```
+
+Then install **CEMS Construction Progress**, then **CEMS Construction HRD** (see RUNNING.md).
 ---
 
 ## Push this repo to GitHub (first time)

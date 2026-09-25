@@ -34,7 +34,7 @@ class CemsPortalAttendanceController(http.Controller):
             ], limit=1)
         values = {
             'employee': employee,
-            'project': employee.cems_project_id if employee else False,
+            'project': employee.cems_get_attendance_project() if employee else False,
             'open_attendance': open_att,
             'page_name': 'cems_attendance',
             'error': kwargs.get('error'),
