@@ -1,0 +1,51 @@
+# CEMS monorepo — ignore local / generated junk
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# Virtual environments (keep outside this repo ideally)
+venv/
+.venv/
+env/
+
+# Odoo / local runtime (do not commit)
+odoo/
+filestore/
+*.log
+odoo.conf
+*.conf
+!odoo.conf.example
+
+# Secrets / env
+.env
+.env.*
+!.env.example
+*.pem
+credentials.json
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Test / coverage
+.coverage
+htmlcov/
+.pytest_cache/
+.mypy_cache/
+.tox/
+.ruff_cache/
+
+# Misc
+*.bak
+*.tmp

@@ -1,0 +1,18 @@
+                  GNU LESSER GENERAL PUBLIC LICENSE
+                       Version 3, 29 June 2007
+
+ Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
+ Everyone is permitted to copy and distribute verbatim copies
+ of this license document, but changing it is not allowed.
+
+This repository’s Odoo addons are licensed under the GNU Lesser General
+Public License v3.0 (LGPL-3), consistent with each module’s
+`__manifest__.py` (`'license': 'LGPL-3'`).
+
+You should have received a copy of the GNU Lesser General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+Full LGPL-3 text: https://www.gnu.org/licenses/lgpl-3.0.en.html
+
+Project documentation under `document_project/` may be treated as
+project/client material; do not assume it is public domain.

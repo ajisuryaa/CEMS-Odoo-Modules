@@ -1,0 +1,18 @@
+.o_cems_portal_attendance .card {
+    border-radius: 0.5rem;
+}
+
+.o_cems_portal_attendance #o_cems_gps_status {
+    font-weight: 500;
+}
+
+.o_cems_portal_attendance .o_cems_camera_video,
+.o_cems_portal_attendance .o_cems_camera_snapshot {
+    max-height: 320px;
+    object-fit: cover;
+    background: #111;
+}
+
+.o_cems_portal_attendance .o_cems_camera_video {
+    transform: scaleX(-1); /* mirror selfie preview */
+}

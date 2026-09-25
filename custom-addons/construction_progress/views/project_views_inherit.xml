@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Inherit project.project form — Geofence + Progress & EVM.
+        Explicit string= on every CEMS field so labels stay clear in the UI.
+    -->
+    <record id="view_project_form_cems" model="ir.ui.view">
+        <field name="name">project.project.form.cems</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.edit_project"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="CEMS / Geofence" name="cems_geofence">
+                    <group>
+                        <group string="Site Geofence">
+                            <field name="geofence_latitude" string="Geofence Latitude"/>
+                            <field name="geofence_longitude" string="Geofence Longitude"/>
+                            <field name="geofence_radius" string="Geofence Radius (m)"/>
+                        </group>
+                        <group string="Assignment">
+                            <field name="cems_engineer_ids" string="Site Engineers" widget="many2many_tags"/>
+                        </group>
+                    </group>
+                </page>
+                <page string="Progress &amp; EVM" name="cems_evm">
+                    <group>
+                        <group string="Budget &amp; Plan">
+                            <field name="currency_id" invisible="1"/>
+                            <field name="bac_amount" string="BAC (Budget At Completion)"/>
+                            <field name="planned_value" string="PV (Planned Value)"/>
+                        </group>
+                        <group string="Computed EVM">
+                            <field name="physical_progress_total" string="Physical Progress Total (%)"/>
+                            <field name="earned_value" string="EV (Earned Value)"/>
+                            <field name="spi" string="SPI"/>
+                        </group>
+                        <group string="WBS">
+                            <field name="wbs_validated" string="WBS Validated"/>
+                            <field name="wbs_weightage_sum" string="WBS Weightage Sum (%)"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

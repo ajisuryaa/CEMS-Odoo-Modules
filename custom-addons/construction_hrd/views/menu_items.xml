@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Extend CEMS root menu from construction_progress -->
+    <menuitem
+        id="menu_cems_hrd"
+        name="Site HRD"
+        parent="construction_progress.menu_cems_root"
+        sequence="30"
+        groups="construction_progress.group_cems_user"
+    />
+
+    <menuitem
+        id="menu_cems_daily_labor"
+        name="Daily Labor Reports"
+        parent="menu_cems_hrd"
+        action="action_daily_labor"
+        sequence="10"
+        groups="construction_progress.group_cems_user"
+    />
+
+    <menuitem
+        id="menu_cems_gate_pass"
+        name="Gate Passes"
+        parent="menu_cems_hrd"
+        action="action_gate_pass"
+        sequence="20"
+        groups="construction_progress.group_cems_user"
+    />
+
+    <menuitem
+        id="menu_cems_attendances"
+        name="Attendances"
+        parent="menu_cems_hrd"
+        action="hr_attendance.hr_attendance_action"
+        sequence="30"
+        groups="construction_progress.group_cems_user"
+    />
+</odoo>

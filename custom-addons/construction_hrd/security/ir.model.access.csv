@@ -1,0 +1,11 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_daily_labor_user,construction.daily.labor.user,model_construction_daily_labor,construction_progress.group_cems_user,1,0,0,0
+access_daily_labor_engineer,construction.daily.labor.engineer,model_construction_daily_labor,construction_progress.group_cems_engineer,1,1,1,0
+access_daily_labor_manager,construction.daily.labor.manager,model_construction_daily_labor,construction_progress.group_cems_manager,1,1,1,1
+access_daily_labor_line_user,construction.daily.labor.line.user,model_construction_daily_labor_line,construction_progress.group_cems_user,1,0,0,0
+access_daily_labor_line_engineer,construction.daily.labor.line.engineer,model_construction_daily_labor_line,construction_progress.group_cems_engineer,1,1,1,0
+access_daily_labor_line_manager,construction.daily.labor.line.manager,model_construction_daily_labor_line,construction_progress.group_cems_manager,1,1,1,1
+access_gate_pass_user,construction.gate.pass.user,model_construction_gate_pass,construction_progress.group_cems_user,1,0,0,0
+access_gate_pass_engineer,construction.gate.pass.engineer,model_construction_gate_pass,construction_progress.group_cems_engineer,1,1,1,0
+access_gate_pass_manager,construction.gate.pass.manager,model_construction_gate_pass,construction_progress.group_cems_manager,1,1,1,1
+access_gate_pass_portal,construction.gate.pass.portal,model_construction_gate_pass,base.group_portal,1,0,0,0

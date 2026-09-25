@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_employee_form_cems_hrd" model="ir.ui.view">
+        <field name="name">hr.employee.form.cems.hrd</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="CEMS / Site" name="cems_site">
+                    <group>
+                        <group string="Site Assignment">
+                            <field name="cems_project_id" string="Site Project"/>
+                            <field name="cems_trade" string="Trade"/>
+                            <field name="cems_hire_type" string="Hire Type"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

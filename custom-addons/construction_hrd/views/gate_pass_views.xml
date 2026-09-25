@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_gate_pass_list" model="ir.ui.view">
+        <field name="name">construction.gate.pass.list</field>
+        <field name="model">construction.gate.pass</field>
+        <field name="arch" type="xml">
+            <list string="Gate Passes">
+                <field name="name" string="Reference"/>
+                <field name="date" string="Date"/>
+                <field name="project_id" string="Project"/>
+                <field name="employee_id" string="Worker"/>
+                <field name="pass_type" string="Type"/>
+                <field name="valid_from" string="Valid From" optional="show"/>
+                <field name="valid_to" string="Valid To" optional="show"/>
+                <field name="state" string="Status" widget="badge"
+                         decoration-info="state == 'draft'"
+                         decoration-success="state == 'approved'"
+                         decoration-muted="state in ('used', 'cancelled')"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_gate_pass_form" model="ir.ui.view">
+        <field name="name">construction.gate.pass.form</field>
+        <field name="model">construction.gate.pass</field>
+        <field name="arch" type="xml">
+            <form string="Gate Pass">
+                <header>
+                    <button name="action_approve" string="Approve" type="object"
+                            invisible="state != 'draft'" class="btn-primary"
+                            groups="construction_progress.group_cems_manager,construction_progress.group_cems_site_manager"/>
+                    <button name="action_mark_used" string="Mark Used" type="object"
+                            invisible="state != 'approved'"/>
+                    <button name="action_cancel" string="Cancel" type="object"
+                            invisible="state in ('used', 'cancelled')"/>
+                    <button name="action_reset_draft" string="Reset to Draft" type="object"
+                            invisible="state == 'draft'"
+                            groups="construction_progress.group_cems_manager"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,approved,used"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Pass Details">
+                            <field name="date" string="Date"/>
+                            <field name="project_id" string="Project"/>
+                            <field name="pass_type" string="Type"/>
+                            <field name="employee_id" string="Worker"/>
+                            <field name="partner_id" string="Visitor / Company"/>
+                        </group>
+                        <group string="Validity">
+                            <field name="valid_from" string="Valid From"/>
+                            <field name="valid_to" string="Valid To"/>
+                        </group>
+                    </group>
+                    <group string="Notes">
+                        <field name="notes" nolabel="1" placeholder="Optional notes..."/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_gate_pass" model="ir.actions.act_window">
+        <field name="name">Gate Passes</field>
+        <field name="res_model">construction.gate.pass</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

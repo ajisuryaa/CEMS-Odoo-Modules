@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_attendance_form_cems_hrd" model="ir.ui.view">
+        <field name="name">hr.attendance.form.cems.hrd</field>
+        <field name="model">hr.attendance</field>
+        <field name="inherit_id" ref="hr_attendance.hr_attendance_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="CEMS Geofence / Selfie" name="cems_attendance">
+                    <group>
+                        <field name="cems_project_id" string="Site Project"/>
+                        <field name="cems_distance_m" string="Distance from Geofence (m)"/>
+                        <field name="cems_geofence_ok" string="Inside Geofence"/>
+                    </group>
+                    <group>
+                        <field name="cems_selfie" string="Selfie" widget="image" filename="cems_selfie_filename"/>
+                        <field name="cems_selfie_filename" invisible="1"/>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_attendance_list_cems_hrd" model="ir.ui.view">
+        <field name="name">hr.attendance.list.cems.hrd</field>
+        <field name="model">hr.attendance</field>
+        <field name="inherit_id" ref="hr_attendance.view_attendance_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <field name="cems_project_id" string="Site Project" optional="show"/>
+                <field name="cems_geofence_ok" string="Inside Geofence" optional="show"/>
+                <field name="cems_distance_m" string="Distance (m)" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

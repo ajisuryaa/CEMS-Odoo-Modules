@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Light CEMS root menu. Points at native Project app for Phase 1;
+        DSR / dashboard menus arrive in later phases.
+    -->
+    <menuitem
+        id="menu_cems_root"
+        name="CEMS"
+        sequence="45"
+        groups="group_cems_user"
+    />
+
+    <menuitem
+        id="menu_cems_projects"
+        name="Projects"
+        parent="menu_cems_root"
+        action="project.open_view_project_all"
+        sequence="10"
+        groups="group_cems_user"
+    />
+
+    <menuitem
+        id="menu_cems_tasks"
+        name="Tasks"
+        parent="menu_cems_root"
+        action="project.action_view_task"
+        sequence="20"
+        groups="group_cems_user"
+    />
+</odoo>

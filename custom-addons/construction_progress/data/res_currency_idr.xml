@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Indonesian Rupiah (IDR) for PT Dynatech Batam.
+        Project BAC / PV / EV follow company_id.currency_id.
+    -->
+    <record id="base.IDR" model="res.currency">
+        <field name="active" eval="True"/>
+        <!-- Whole rupiah; no sen in typical construction budgets. -->
+        <field name="rounding">1</field>
+    </record>
+
+    <record id="base.main_company" model="res.company">
+        <field name="currency_id" ref="base.IDR"/>
+    </record>
+</odoo>

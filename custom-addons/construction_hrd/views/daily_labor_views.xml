@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_daily_labor_list" model="ir.ui.view">
+        <field name="name">construction.daily.labor.list</field>
+        <field name="model">construction.daily.labor</field>
+        <field name="arch" type="xml">
+            <list string="Daily Labor Reports">
+                <field name="name" string="Reference"/>
+                <field name="date" string="Date"/>
+                <field name="project_id" string="Project"/>
+                <field name="total_direct" string="Direct Hire"/>
+                <field name="total_subcon" string="Subcontractor"/>
+                <field name="total_headcount" string="Total"/>
+                <field name="state" string="Status" widget="badge"
+                         decoration-info="state == 'draft'"
+                         decoration-warning="state == 'submitted'"
+                         decoration-success="state == 'approved'"/>
+                <field name="user_id" string="Prepared By" widget="many2one_avatar_user" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_daily_labor_form" model="ir.ui.view">
+        <field name="name">construction.daily.labor.form</field>
+        <field name="model">construction.daily.labor</field>
+        <field name="arch" type="xml">
+            <form string="Daily Labor Report">
+                <header>
+                    <button name="action_submit" string="Submit" type="object"
+                            invisible="state != 'draft'" class="btn-primary"/>
+                    <button name="action_approve" string="Approve" type="object"
+                            invisible="state != 'submitted'" class="btn-primary"
+                            groups="construction_progress.group_cems_manager"/>
+                    <button name="action_reset_draft" string="Reset to Draft" type="object"
+                            invisible="state == 'draft'"
+                            groups="construction_progress.group_cems_manager"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Report">
+                            <field name="date" string="Date"/>
+                            <field name="project_id" string="Project"/>
+                            <field name="user_id" string="Prepared By" widget="many2one_avatar_user"/>
+                        </group>
+                        <group string="Totals">
+                            <field name="total_direct" string="Total Direct Hire"/>
+                            <field name="total_subcon" string="Total Subcontractor"/>
+                            <field name="total_headcount" string="Total Headcount"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Headcount by Trade" name="lines">
+                            <field name="line_ids">
+                                <list editable="bottom">
+                                    <field name="trade" string="Trade"/>
+                                    <field name="headcount_direct" string="Direct Hire"/>
+                                    <field name="headcount_subcon" string="Subcontractor"/>
+                                    <field name="headcount_total" string="Total" sum="Total"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="notes" placeholder="Optional notes..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_daily_labor" model="ir.actions.act_window">
+        <field name="name">Daily Labor Reports</field>
+        <field name="res_model">construction.daily.labor</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

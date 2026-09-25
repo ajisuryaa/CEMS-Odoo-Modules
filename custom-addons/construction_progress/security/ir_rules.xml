@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!--
+        Phase 1 record rules — multi-project isolation via cems_engineer_ids.
+        project.project / project.task already have model access from `project`;
+        these rules narrow visible records per CEMS role.
+    -->
+
+    <!-- Project Manager: full CRUD on own projects (user_id = current user) -->
+    <record id="rule_project_cems_manager" model="ir.rule">
+        <field name="name">CEMS Manager: own projects</field>
+        <field name="model_id" ref="project.model_project_project"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_cems_manager'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_task_cems_manager" model="ir.rule">
+        <field name="name">CEMS Manager: tasks on own projects</field>
+        <field name="model_id" ref="project.model_project_task"/>
+        <field name="domain_force">[('project_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_cems_manager'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <!-- Site Engineer: R/W on projects where they are in cems_engineer_ids -->
+    <record id="rule_project_cems_engineer" model="ir.rule">
+        <field name="name">CEMS Engineer: assigned projects</field>
+        <field name="model_id" ref="project.model_project_project"/>
+        <field name="domain_force">[('cems_engineer_ids', 'in', [user.id])]</field>
+        <field name="groups" eval="[(4, ref('group_cems_engineer'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="rule_task_cems_engineer" model="ir.rule">
+        <field name="name">CEMS Engineer: tasks on assigned projects</field>
+        <field name="model_id" ref="project.model_project_task"/>
+        <field name="domain_force">[('project_id.cems_engineer_ids', 'in', [user.id])]</field>
+        <field name="groups" eval="[(4, ref('group_cems_engineer'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <!-- Director: read all projects / tasks -->
+    <record id="rule_project_cems_director_read" model="ir.rule">
+        <field name="name">CEMS Director: read all projects</field>
+        <field name="model_id" ref="project.model_project_project"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_cems_director'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="rule_task_cems_director_read" model="ir.rule">
+        <field name="name">CEMS Director: read all tasks</field>
+        <field name="model_id" ref="project.model_project_task"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_cems_director'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+</odoo>

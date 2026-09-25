@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        CEMS fields on task form: dedicated notebook page with visible labels.
+        Do NOT inject into the Deadline div (nolabel) — that hid field names.
+    -->
+    <record id="view_task_form_cems" model="ir.ui.view">
+        <field name="name">project.task.form.cems</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_form2"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="CEMS / WBS &amp; Progress" name="cems_wbs">
+                    <group>
+                        <group string="Work Breakdown Structure">
+                            <field name="wbs_code" string="WBS Code"/>
+                            <field name="is_wbs_billable" string="WBS Billable"/>
+                        </group>
+                        <group string="Progress">
+                            <field name="weightage_pct" string="Weightage (%)"/>
+                            <field name="physical_progress_pct" string="Physical Progress (%)"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_task_list_cems" model="ir.ui.view">
+        <field name="name">project.task.list.cems</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_tree2"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <field name="wbs_code" string="WBS Code" optional="show"/>
+                <field name="weightage_pct" string="Weightage (%)" optional="show"/>
+                <field name="physical_progress_pct" string="Physical Progress (%)" optional="show"/>
+                <field name="is_wbs_billable" string="WBS Billable" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

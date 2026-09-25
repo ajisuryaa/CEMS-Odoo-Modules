@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Odoo 19: res.groups no longer has category_id.
+        Category lives on res.groups.privilege; groups link via privilege_id.
+    -->
+    <record id="module_category_cems" model="ir.module.category">
+        <field name="name">CEMS</field>
+        <field name="description">Construction &amp; Engineering Management Suite</field>
+        <field name="sequence">50</field>
+    </record>
+
+    <!-- Main role ladder (shown as one privilege block on the user form) -->
+    <record id="res_groups_privilege_cems" model="res.groups.privilege">
+        <field name="name">CEMS</field>
+        <field name="sequence">50</field>
+        <field name="category_id" ref="module_category_cems"/>
+    </record>
+
+    <record id="res_groups_privilege_cems_hse" model="res.groups.privilege">
+        <field name="name">CEMS HSE</field>
+        <field name="sequence">51</field>
+        <field name="category_id" ref="module_category_cems"/>
+    </record>
+
+    <record id="res_groups_privilege_cems_qc" model="res.groups.privilege">
+        <field name="name">CEMS QC</field>
+        <field name="sequence">52</field>
+        <field name="category_id" ref="module_category_cems"/>
+    </record>
+
+    <record id="res_groups_privilege_cems_procurement" model="res.groups.privilege">
+        <field name="name">CEMS Procurement</field>
+        <field name="sequence">53</field>
+        <field name="category_id" ref="module_category_cems"/>
+    </record>
+
+    <!-- Base CEMS user -->
+    <record id="group_cems_user" model="res.groups">
+        <field name="name">User</field>
+        <field name="sequence">10</field>
+        <field name="privilege_id" ref="res_groups_privilege_cems"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        <field name="comment">Base internal user for CEMS suite.</field>
+    </record>
+
+    <!-- Site Engineer -->
+    <record id="group_cems_engineer" model="res.groups">
+        <field name="name">Site Engineer</field>
+        <field name="sequence">20</field>
+        <field name="privilege_id" ref="res_groups_privilege_cems"/>
+        <field name="implied_ids" eval="[(4, ref('group_cems_user'))]"/>
+        <field name="comment">Write progress / tasks on assigned projects.</field>
+    </record>
+
+    <!-- Site Manager -->
+    <record id="group_cems_site_manager" model="res.groups">
+        <field name="name">Site Manager</field>
+        <field name="sequence">30</field>
+        <field name="privilege_id" ref="res_groups_privilege_cems"/>
+        <field name="implied_ids" eval="[(4, ref('group_cems_engineer'))]"/>
+        <field name="comment">Site-level approvals (MR / PTW later phases).</field>
+    </record>
+
+    <!-- Project Manager -->
+    <record id="group_cems_manager" model="res.groups">
+        <field name="name">Project Manager</field>
+        <field name="sequence">40</field>
+        <field name="privilege_id" ref="res_groups_privilege_cems"/>
+        <field name="implied_ids" eval="[(4, ref('group_cems_site_manager'))]"/>
+        <field name="comment">Full progress; approve flows in other CEMS modules.</field>
+    </record>
+
+    <!-- Project Director -->
+    <record id="group_cems_director" model="res.groups">
+        <field name="name">Project Director</field>
+        <field name="sequence">50</field>
+        <field name="privilege_id" ref="res_groups_privilege_cems"/>
+        <field name="implied_ids" eval="[(4, ref('group_cems_manager'))]"/>
+        <field name="comment">Read-mostly across projects; full dashboard later.</field>
+    </record>
+
+    <!-- HSE Officer (rights fleshed out in construction_hse) -->
+    <record id="group_cems_hse" model="res.groups">
+        <field name="name">Officer</field>
+        <field name="sequence">10</field>
+        <field name="privilege_id" ref="res_groups_privilege_cems_hse"/>
+        <field name="implied_ids" eval="[(4, ref('group_cems_user'))]"/>
+        <field name="comment">HSE full access defined in construction_hse.</field>
+    </record>
+
+    <!-- QC Inspector (rights fleshed out in construction_qc) -->
+    <record id="group_cems_qc" model="res.groups">
+        <field name="name">Inspector</field>
+        <field name="sequence">10</field>
+        <field name="privilege_id" ref="res_groups_privilege_cems_qc"/>
+        <field name="implied_ids" eval="[(4, ref('group_cems_user'))]"/>
+        <field name="comment">QC full access defined in construction_qc.</field>
+    </record>
+
+    <!-- Procurement -->
+    <record id="group_cems_procurement" model="res.groups">
+        <field name="name">User</field>
+        <field name="sequence">10</field>
+        <field name="privilege_id" ref="res_groups_privilege_cems_procurement"/>
+        <field name="implied_ids" eval="[(4, ref('group_cems_user'))]"/>
+        <field name="comment">Material request / PO review (construction_logistics).</field>
+    </record>
+</odoo>
