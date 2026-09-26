@@ -6,7 +6,8 @@ Modul Site Workforce & Portal CEMS. Sebelum coding, baca:
 
 Juga: [AGENTS.md pusat](../../document_project/pt_dynatech_batam/AGENTS.md) ·
 [construction_progress/AGENTS.md](../construction_progress/AGENTS.md) ·
-[SKILL.md](../../SKILL.md) (Odoo/Python conventions)
+[SKILL.md](../../SKILL.md) (Odoo/Python conventions) ·
+[Plan Portal Hub `/my`](../../document_project/pt_dynatech_batam/10_plan_portal_my_hub.md)
 
 ## Scope Phase 2
 

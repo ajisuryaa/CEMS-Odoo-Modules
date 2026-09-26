@@ -37,3 +37,4 @@ Baca file ini sebelum mengubah/membuat kode terkait proyek construction Odoo PT 
 - Struktur folder: [04_struktur_direktori.md](./04_struktur_direktori.md)
 - **Phase 1 Progress:** [08_phase1_construction_progress.md](./08_phase1_construction_progress.md)
 - **Phase 2 HRD:** [09_phase2_construction_hrd.md](./09_phase2_construction_hrd.md)
+- **Plan Portal Hub `/my` (Phase 1–2 UI):** [10_plan_portal_my_hub.md](./10_plan_portal_my_hub.md)
