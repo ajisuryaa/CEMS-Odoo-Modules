@@ -1,0 +1,214 @@
+/* CEMS website homepage login — synced with portal_cems/index.html */
+
+:root {
+  --cems-ink: #0f1c1a;
+  --cems-leaf: #0d9488;
+  --cems-leaf-bright: #14b8a6;
+  --cems-touch: 3.25rem;
+}
+
+/* Hide default website chrome on this page */
+body:has(.cems-login-page) header,
+body:has(.cems-login-page) #footer,
+body:has(.cems-login-page) footer.o_footer,
+body:has(.cems-login-page) .o_footer_copyright {
+  display: none !important;
+}
+
+body:has(.cems-login-page) #wrapwrap {
+  background: #fff;
+}
+
+.cems-login-page {
+  background: #fff;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+.cems-login-form-pane {
+  background: #fff;
+  min-height: 100vh;
+  padding: 2rem 1.5rem;
+}
+
+.cems-login-form-inner {
+  max-width: 420px;
+  padding: 0.5rem 0 1.5rem;
+}
+
+.cems-logo {
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--cems-ink);
+  font-size: 1.25rem;
+}
+
+.cems-logo span {
+  color: var(--cems-leaf);
+}
+
+.cems-logo-mark {
+  display: inline-block;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 0.45rem;
+  background: linear-gradient(145deg, var(--cems-leaf-bright), var(--cems-leaf));
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.35);
+  flex-shrink: 0;
+}
+
+.cems-login-title {
+  font-size: clamp(1.6rem, 3vw, 2rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--cems-ink);
+  margin-bottom: 0.35rem;
+}
+
+.cems-login-subtitle {
+  color: #64748b;
+  font-size: 1rem;
+}
+
+.cems-btn-touch {
+  min-height: var(--cems-touch);
+  font-weight: 700;
+  font-size: 1.05rem;
+  border-radius: 0.75rem;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+
+.cems-btn-primary {
+  background: var(--cems-leaf) !important;
+  border-color: var(--cems-leaf) !important;
+  color: #fff !important;
+}
+
+.cems-btn-primary:hover,
+.cems-btn-primary:focus {
+  background: #0f766e !important;
+  border-color: #0f766e !important;
+  color: #fff !important;
+}
+
+.cems-input,
+.cems-input-group .form-control,
+.cems-input-group .input-group-text {
+  border-radius: 0.65rem;
+  border-color: #e2e8f0;
+  min-height: 3.1rem;
+}
+
+.cems-input-group .input-group-text {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.cems-input-group .form-control {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.cems-input:focus,
+.cems-input-group .form-control:focus {
+  border-color: var(--cems-leaf);
+  box-shadow: 0 0 0 0.2rem rgba(13, 148, 136, 0.2);
+}
+
+.cems-input-group:focus-within .input-group-text {
+  border-color: var(--cems-leaf);
+}
+
+.cems-link-leaf {
+  color: var(--cems-leaf) !important;
+}
+
+.cems-link-leaf:hover {
+  color: #0f766e !important;
+  text-decoration: underline !important;
+}
+
+.cems-login-legal a {
+  font-weight: 600;
+}
+
+.cems-login-form-pane .form-check-label,
+.cems-login-legal {
+  color: #0f1c1a !important;
+}
+
+/* Desktop hero: margin top/bottom, flush right, rounded left, shadow */
+.cems-login-hero-col {
+  background: #fff;
+  padding: 1.5rem 0 1.5rem 0.75rem;
+}
+
+.cems-login-hero-pane {
+  min-height: calc(100vh - 3rem);
+  background:
+    linear-gradient(155deg, rgba(15, 28, 26, 0.82) 0%, rgba(13, 148, 136, 0.72) 55%, rgba(15, 28, 26, 0.75) 100%),
+    url("/construction_hrd/static/src/img/login_hero.svg") center / cover no-repeat;
+  color: #fff;
+  border-radius: 2.75rem 0 0 2.75rem;
+  box-shadow:
+    -18px 0 36px rgba(15, 28, 26, 0.18),
+    -8px 14px 32px rgba(15, 28, 26, 0.22),
+    -2px 8px 16px rgba(15, 28, 26, 0.12);
+}
+
+.cems-login-hero-overlay {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    radial-gradient(circle at 80% 20%, rgba(20, 184, 166, 0.35), transparent 45%),
+    radial-gradient(circle at 10% 90%, rgba(15, 28, 26, 0.45), transparent 40%);
+  pointer-events: none;
+}
+
+.cems-hero-brand {
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  font-weight: 800;
+  opacity: 0.85;
+}
+
+.cems-hero-headline {
+  font-size: clamp(1.75rem, 3.2vw, 2.6rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  margin-bottom: 1rem;
+}
+
+.cems-hero-lead {
+  max-width: 28rem;
+  opacity: 0.9;
+  font-size: 1.05rem;
+}
+
+/* Mobile: form only, white background, no hero */
+@media (max-width: 991.98px) {
+  .cems-login-page,
+  .cems-login-page .container-fluid,
+  .cems-login-page .row {
+    min-height: 100vh;
+    background: #fff;
+  }
+
+  .cems-login-form-pane {
+    min-height: 100vh;
+    padding: 2rem 1.25rem 2.5rem;
+    background: #fff;
+  }
+
+  .cems-login-form-inner {
+    max-width: 100%;
+  }
+
+  .cems-login-hero-col,
+  .cems-login-hero-mobile {
+    display: none !important;
+  }
+}

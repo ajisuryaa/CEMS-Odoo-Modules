@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Ensure website Home menu points at / (CEMS login homepage) -->
+    <record id="website.menu_home" model="website.menu">
+        <field name="url">/</field>
+    </record>
+</odoo>
