@@ -92,32 +92,43 @@ body:has(.cems-login-page) #wrapwrap {
   color: #fff !important;
 }
 
-.cems-input,
+/* Unified input group: one outer border (icon + field) */
+.cems-input-group {
+  border: 1px solid #e2e8f0;
+  border-radius: 0.65rem;
+  overflow: hidden;
+  background: #fff;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
 .cems-input-group .form-control,
 .cems-input-group .input-group-text {
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  min-height: 3.1rem;
+  background: #fff !important;
+}
+
+.cems-input-group .form-control:focus {
+  outline: none;
+  box-shadow: none !important;
+}
+
+.cems-input-group:focus-within {
+  border-color: var(--cems-leaf);
+  box-shadow: 0 0 0 0.2rem rgba(13, 148, 136, 0.2);
+}
+
+.cems-input {
   border-radius: 0.65rem;
   border-color: #e2e8f0;
   min-height: 3.1rem;
 }
 
-.cems-input-group .input-group-text {
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-}
-
-.cems-input-group .form-control {
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-}
-
-.cems-input:focus,
-.cems-input-group .form-control:focus {
+.cems-input:focus {
   border-color: var(--cems-leaf);
   box-shadow: 0 0 0 0.2rem rgba(13, 148, 136, 0.2);
-}
-
-.cems-input-group:focus-within .input-group-text {
-  border-color: var(--cems-leaf);
 }
 
 .cems-link-leaf {

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from odoo import api, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import UserError, ValidationError
 
 
 class ConstructionDailyLabor(models.Model):
@@ -14,7 +15,7 @@ class ConstructionDailyLabor(models.Model):
         string='Reference',
         required=True,
         copy=False,
-        default=lambda self: self.env._('New'),
+        default=lambda self: _('New'),
     )
     date = fields.Date(
         string='Date',
@@ -84,19 +85,32 @@ class ConstructionDailyLabor(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
-            if vals.get('name', self.env._('New')) == self.env._('New'):
+            if vals.get('name', _('New')) == _('New'):
                 vals['name'] = self.env['ir.sequence'].next_by_code(
                     'construction.daily.labor'
-                ) or self.env._('New')
+                ) or _('New')
         return super().create(vals_list)
 
     def action_submit(self):
+        for rec in self:
+            if rec.state != 'draft':
+                raise UserError(_('Only draft Daily Labor Reports can be submitted.'))
+            if not rec.line_ids:
+                raise UserError(_('Add at least one headcount line before submitting.'))
         self.write({'state': 'submitted'})
 
     def action_approve(self):
+        for rec in self:
+            if rec.state != 'submitted':
+                raise UserError(_('Only submitted Daily Labor Reports can be approved.'))
         self.write({'state': 'approved'})
 
     def action_reset_draft(self):
+        for rec in self:
+            if rec.state == 'approved':
+                raise UserError(
+                    _('Approved Daily Labor Reports cannot be reset. Create a correction instead.')
+                )
         self.write({'state': 'draft'})
 
 
@@ -138,3 +152,9 @@ class ConstructionDailyLaborLine(models.Model):
     def _compute_headcount_total(self):
         for line in self:
             line.headcount_total = line.headcount_direct + line.headcount_subcon
+
+    @api.constrains('headcount_direct', 'headcount_subcon')
+    def _check_headcount_non_negative(self):
+        for line in self:
+            if line.headcount_direct < 0 or line.headcount_subcon < 0:
+                raise ValidationError(_('Headcount values cannot be negative.'))

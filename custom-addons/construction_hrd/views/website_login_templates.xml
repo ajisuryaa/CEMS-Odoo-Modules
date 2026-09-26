@@ -33,13 +33,13 @@
                                     <div class="mb-3">
                                         <label for="login" class="form-label fw-semibold">Email</label>
                                         <div class="input-group input-group-lg cems-input-group">
-                                            <span class="input-group-text bg-white border-end-0">
+                                            <span class="input-group-text bg-white">
                                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                                                     <path d="M4 6h16v12H4V6zm0 0l8 7 8-7" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                                 </svg>
                                             </span>
                                             <input type="text"
-                                                   class="form-control border-start-0"
+                                                   class="form-control"
                                                    id="login"
                                                    name="login"
                                                    placeholder="Enter your email"
@@ -52,13 +52,22 @@
 
                                     <div class="mb-3">
                                         <label for="password" class="form-label fw-semibold">Password</label>
-                                        <input type="password"
-                                               class="form-control form-control-lg cems-input"
-                                               id="password"
-                                               name="password"
-                                               placeholder="••••••••"
-                                               required="required"
-                                               autocomplete="current-password"/>
+                                        <div class="input-group input-group-lg cems-input-group">
+                                            <span class="input-group-text bg-white">
+                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                                    <path d="M7 11V8a5 5 0 0 1 10 0v3" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/>
+                                                    <rect x="5" y="11" width="14" height="10" rx="2" stroke="#94a3b8" stroke-width="2"/>
+                                                    <circle cx="12" cy="16" r="1.25" fill="#94a3b8"/>
+                                                </svg>
+                                            </span>
+                                            <input type="password"
+                                                   class="form-control"
+                                                   id="password"
+                                                   name="password"
+                                                   placeholder="••••••••"
+                                                   required="required"
+                                                   autocomplete="current-password"/>
+                                        </div>
                                     </div>
 
                                     <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-4">

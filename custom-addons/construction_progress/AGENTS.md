@@ -4,7 +4,8 @@ Modul fondasi CEMS. Sebelum coding, baca landasan lengkap:
 
 **[document_project/pt_dynatech_batam/08_phase1_construction_progress.md](../../document_project/pt_dynatech_batam/08_phase1_construction_progress.md)**
 
-Juga: [AGENTS.md pusat](../../document_project/pt_dynatech_batam/AGENTS.md)
+Juga: [AGENTS.md pusat](../../document_project/pt_dynatech_batam/AGENTS.md) ·
+[SKILL.md](../../SKILL.md) (Odoo/Python conventions)
 
 ## Scope Phase 1 saja
 
@@ -21,6 +22,13 @@ Juga: [AGENTS.md pusat](../../document_project/pt_dynatech_batam/AGENTS.md)
 - Portal attendance resolve project dari Site Team membership.
 - Site Team **auto-share** ke portal: set `privacy_visibility` ke `invited_users` bila perlu, `message_subscribe` partner, dan `project.collaborator` untuk user portal — agar proyek muncul di `/my/projects`.
 
+## Struktur (SKILL.md)
+
+- Models: ORM + `@api.constrains` / `@api.depends` (no core edits)
+- Views: XML inheritance only (`xpath`)
+- Security: groups + `ir.rule` in `security/`
+- Tests: `tests/` tagged `cems`
+
 ## Jangan kerjakan di Phase 1
 
 - `construction.daily.report` / DSR → Phase 3
@@ -32,3 +40,4 @@ Juga: [AGENTS.md pusat](../../document_project/pt_dynatech_batam/AGENTS.md)
 1. Tidak modify core Odoo.
 2. Hanya `_inherit` + xpath.
 3. Hitung EVM/weightage di server-side Python.
+4. Validasi data dengan `ValidationError` + `_()`; jangan andalkan UI saja.

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from odoo import api, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import UserError, ValidationError
 
 
 class ConstructionGatePass(models.Model):
@@ -14,7 +15,7 @@ class ConstructionGatePass(models.Model):
         string='Reference',
         required=True,
         copy=False,
-        default=lambda self: self.env._('New'),
+        default=lambda self: _('New'),
     )
     date = fields.Date(
         string='Date',
@@ -76,20 +77,40 @@ class ConstructionGatePass(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
-            if vals.get('name', self.env._('New')) == self.env._('New'):
+            if vals.get('name', _('New')) == _('New'):
                 vals['name'] = self.env['ir.sequence'].next_by_code(
                     'construction.gate.pass'
-                ) or self.env._('New')
+                ) or _('New')
         return super().create(vals_list)
 
+    @api.constrains('valid_from', 'valid_to')
+    def _check_validity_window(self):
+        for rec in self:
+            if rec.valid_from and rec.valid_to and rec.valid_to < rec.valid_from:
+                raise ValidationError(
+                    _('Valid To must be on or after Valid From.')
+                )
+
     def action_approve(self):
+        for rec in self:
+            if rec.state != 'draft':
+                raise UserError(_('Only draft gate passes can be approved.'))
         self.write({'state': 'approved'})
 
     def action_mark_used(self):
+        for rec in self:
+            if rec.state != 'approved':
+                raise UserError(_('Only approved gate passes can be marked as used.'))
         self.write({'state': 'used'})
 
     def action_cancel(self):
+        for rec in self:
+            if rec.state in ('used', 'cancelled'):
+                raise UserError(_('Used or cancelled gate passes cannot be cancelled again.'))
         self.write({'state': 'cancelled'})
 
     def action_reset_draft(self):
+        for rec in self:
+            if rec.state not in ('cancelled', 'approved'):
+                raise UserError(_('Only cancelled or approved gate passes can be reset to draft.'))
         self.write({'state': 'draft'})

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from odoo import api, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError
 
 
 class ProjectProject(models.Model):
@@ -147,6 +148,29 @@ class ProjectProject(models.Model):
         if 'cems_member_ids' in vals or 'cems_engineer_ids' in vals:
             self._cems_sync_site_team_portal_access()
         return res
+
+    @api.constrains('geofence_latitude', 'geofence_longitude', 'geofence_radius')
+    def _check_cems_geofence(self):
+        """Keep geofence data coherent when any coordinate/radius is set."""
+        for project in self:
+            has_center = bool(project.geofence_latitude or project.geofence_longitude)
+            if project.geofence_radius is not None and project.geofence_radius < 0:
+                raise ValidationError(
+                    _('Geofence radius for project "%(project)s" cannot be negative.',
+                      project=project.display_name)
+                )
+            if has_center and (not project.geofence_radius or project.geofence_radius <= 0):
+                raise ValidationError(
+                    _(
+                        'Project "%(project)s" has geofence coordinates but no '
+                        'positive radius. Set Geofence Radius (m).',
+                        project=project.display_name,
+                    )
+                )
+            if project.geofence_latitude and not (-90.0 <= project.geofence_latitude <= 90.0):
+                raise ValidationError(_('Geofence latitude must be between -90 and 90.'))
+            if project.geofence_longitude and not (-180.0 <= project.geofence_longitude <= 180.0):
+                raise ValidationError(_('Geofence longitude must be between -180 and 180.'))
 
     @api.depends(
         'task_ids.weightage_pct',

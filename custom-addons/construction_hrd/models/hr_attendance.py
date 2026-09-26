@@ -1,23 +1,12 @@
 # -*- coding: utf-8 -*-
-import math
+import logging
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 
+from ..utils import haversine_distance_m
 
-EARTH_RADIUS_M = 6_371_000.0
-
-
-def haversine_distance_m(lat1, lon1, lat2, lon2):
-    """Great-circle distance in meters (CEMS geofence formula)."""
-    phi1, phi2 = math.radians(lat1), math.radians(lat2)
-    d_phi = math.radians(lat2 - lat1)
-    d_lambda = math.radians(lon2 - lon1)
-    a = (
-        math.sin(d_phi / 2.0) ** 2
-        + math.cos(phi1) * math.cos(phi2) * math.sin(d_lambda / 2.0) ** 2
-    )
-    return 2.0 * EARTH_RADIUS_M * math.asin(math.sqrt(a))
+_logger = logging.getLogger(__name__)
 
 
 class HrAttendance(models.Model):
@@ -48,7 +37,6 @@ class HrAttendance(models.Model):
         readonly=True,
         default=False,
     )
-    # Extend native mode selection with portal check-in
     in_mode = fields.Selection(
         selection_add=[('portal', 'CEMS Portal')],
         ondelete={'portal': 'set default'},
@@ -62,14 +50,14 @@ class HrAttendance(models.Model):
         """
         if not project:
             raise ValidationError(
-                self.env._('No site project assigned. Contact your supervisor.')
+                _('No site project assigned. Contact your supervisor.')
             )
         center_lat = project.geofence_latitude or 0.0
         center_lon = project.geofence_longitude or 0.0
         radius = project.geofence_radius or 0.0
         if not radius or (center_lat == 0.0 and center_lon == 0.0):
             raise ValidationError(
-                self.env._(
+                _(
                     'Project "%(project)s" has no geofence configured. '
                     'Set latitude, longitude and radius on the project '
                     '(CEMS / Geofence tab).',
@@ -81,7 +69,7 @@ class HrAttendance(models.Model):
         )
         if distance > radius:
             raise ValidationError(
-                self.env._(
+                _(
                     'You are outside the site geofence '
                     '(%(distance).0f m away; allowed %(radius).0f m).',
                     distance=distance,
@@ -94,11 +82,11 @@ class HrAttendance(models.Model):
     def cems_portal_check_in(self, employee, latitude, longitude, selfie_b64=None, filename=None):
         """Create check-in for portal worker after geofence validation."""
         if not employee:
-            raise UserError(self.env._('No employee linked to this user.'))
+            raise UserError(_('No employee linked to this user.'))
         project = employee.cems_get_attendance_project()
         if not project:
             raise UserError(
-                self.env._(
+                _(
                     'You are not on any project Site Team. '
                     'Ask your supervisor to add you under '
                     'Project → CEMS / Geofence → Site Team.'
@@ -106,14 +94,13 @@ class HrAttendance(models.Model):
             )
         _ok, distance = self.cems_validate_geofence(project, latitude, longitude)
 
-        # Close any open attendance first (safety)
         open_att = self.sudo().search([
             ('employee_id', '=', employee.id),
             ('check_out', '=', False),
         ], limit=1)
         if open_att:
             raise UserError(
-                self.env._('You already have an open check-in. Please check out first.')
+                _('You already have an open check-in. Please check out first.')
             )
 
         vals = {
@@ -129,22 +116,35 @@ class HrAttendance(models.Model):
         if selfie_b64:
             vals['cems_selfie'] = selfie_b64
             vals['cems_selfie_filename'] = filename or 'selfie.jpg'
-        return self.sudo().create(vals)
+        attendance = self.sudo().create(vals)
+        _logger.info(
+            'CEMS portal check-in created attendance=%s employee=%s project=%s distance_m=%.1f',
+            attendance.id,
+            employee.id,
+            project.id,
+            distance,
+        )
+        return attendance
 
     @api.model
     def cems_portal_check_out(self, employee, latitude=None, longitude=None):
         """Check out the latest open attendance for the employee."""
         if not employee:
-            raise UserError(self.env._('No employee linked to this user.'))
+            raise UserError(_('No employee linked to this user.'))
         open_att = self.sudo().search([
             ('employee_id', '=', employee.id),
             ('check_out', '=', False),
         ], order='check_in desc', limit=1)
         if not open_att:
-            raise UserError(self.env._('No open check-in found.'))
+            raise UserError(_('No open check-in found.'))
         vals = {'check_out': fields.Datetime.now()}
         if latitude is not None and longitude is not None:
             vals['out_latitude'] = float(latitude)
             vals['out_longitude'] = float(longitude)
         open_att.sudo().write(vals)
+        _logger.info(
+            'CEMS portal check-out attendance=%s employee=%s',
+            open_att.id,
+            employee.id,
+        )
         return open_att

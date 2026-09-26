@@ -5,7 +5,8 @@ Modul Site Workforce & Portal CEMS. Sebelum coding, baca:
 **[document_project/pt_dynatech_batam/09_phase2_construction_hrd.md](../../document_project/pt_dynatech_batam/09_phase2_construction_hrd.md)**
 
 Juga: [AGENTS.md pusat](../../document_project/pt_dynatech_batam/AGENTS.md) ·
-[construction_progress/AGENTS.md](../construction_progress/AGENTS.md)
+[construction_progress/AGENTS.md](../construction_progress/AGENTS.md) ·
+[SKILL.md](../../SKILL.md) (Odoo/Python conventions)
 
 ## Scope Phase 2
 
@@ -15,12 +16,24 @@ Juga: [AGENTS.md pusat](../../document_project/pt_dynatech_batam/AGENTS.md) ·
 - `construction.daily.labor` (+ lines)
 - `construction.gate.pass` (fondasi)
 - Pakai `res.groups` CEMS dari `construction_progress` (jangan duplikasi group)
+- Website `/` → CEMS login (`controllers/website_home.py`); auth POST `/cems/login`
 
 ## Access Type (employee)
 
 - Field `cems_access_type`: `internal` | `portal`
 - Tombol **Apply Access Type** → portal-only user (no `/web`) atau Internal User
 - `cems_access_actual` menampilkan akses login nyata Related User
+
+## Struktur modul (SKILL.md)
+
+| Layer | Path |
+|-------|------|
+| Models | `models/` — ORM, `@api.constrains`, `UserError` / `ValidationError` |
+| Controllers | `controllers/` — `@http.route`, try/except + `_logger` |
+| Utils | `utils/` — pure helpers (e.g. Haversine) |
+| Views / QWeb | `views/` — XML inherit, portal & website templates |
+| Security | `security/` — ACL CSV + `ir.rule` |
+| Tests | `tests/` — `TransactionCase`, tag `cems` |
 
 ## Jangan kerjakan di Phase 2
 
@@ -30,7 +43,9 @@ Juga: [AGENTS.md pusat](../../document_project/pt_dynatech_batam/AGENTS.md) ·
 
 ## Aturan
 
-1. Tidak modify core Odoo.
+1. Tidak modify core Odoo — extend via inheritance.
 2. Validasi geofence **server-side** (bukan hanya JS).
 3. Worker portal hanya lihat data sendiri (`employee_id.user_id = user`).
 4. Geofence center/radius diambil dari `project.project` (Progress) — jangan redefinisi field.
+5. String user-facing lewat `_()`; log error bisnis dengan `_logger`.
+6. Tulis/update tests di `tests/` untuk logika geofence & workflow DLR/gate pass.
