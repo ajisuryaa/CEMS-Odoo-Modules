@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Shared CEMS Portal Hub shell (sidebar + topbar) -->
+    <template id="cems_portal_layout" name="CEMS Portal Hub Layout">
+        <t t-call="website.layout">
+            <t t-set="no_header" t-value="True"/>
+            <t t-set="no_footer" t-value="True"/>
+            <div id="wrap">
+                <div class="cems-portal-shell" id="o_cems_portal_shell">
+                    <aside class="cems-hub-sidebar" aria-label="CEMS navigation">
+                        <a href="/my" class="cems-hub-brand">
+                            <span class="cems-hub-brand-mark" aria-hidden="true"/>
+                            CEMS <span>Portal</span>
+                        </a>
+                        <ul class="cems-hub-nav">
+                            <!-- Map Odoo portal page_name → sidebar id (set after layout values) -->
+                            <t t-set="cems_active" t-value="{
+                                'home': 'home',
+                                'project': 'projects',
+                                'projects': 'projects',
+                                'task': 'tasks',
+                                'tasks': 'tasks',
+                                'project_task': 'tasks',
+                                'my_details': 'account',
+                                'account': 'account',
+                                'cems_attendance': 'cems_attendance',
+                                'cems_gate_passes': 'cems_gate_passes',
+                                'cems_daily_labor': 'cems_daily_labor',
+                            }.get(page_name, cems_active_menu or 'home')"/>
+                            <t t-foreach="cems_menu or []" t-as="item">
+                                <li>
+                                    <a t-att-href="item['url']"
+                                       t-att-class="'active' if item['id'] == cems_active else None">
+                                        <span class="cems-hub-nav-icon" aria-hidden="true">
+                                            <t t-if="item.get('icon') == 'dashboard'">▣</t>
+                                            <t t-elif="item.get('icon') == 'projects'">📁</t>
+                                            <t t-elif="item.get('icon') == 'tasks'">☑</t>
+                                            <t t-elif="item.get('icon') == 'attendance'">⏱</t>
+                                            <t t-elif="item.get('icon') == 'gate'">🪪</t>
+                                            <t t-elif="item.get('icon') == 'labor'">👷</t>
+                                            <t t-elif="item.get('icon') == 'profile'">👤</t>
+                                            <t t-else="">•</t>
+                                        </span>
+                                        <t t-esc="item['label']"/>
+                                    </a>
+                                </li>
+                            </t>
+                        </ul>
+                        <div class="cems-hub-sidebar-foot">
+                            <a t-if="cems_is_internal" href="/web">Open Back Office</a>
+                            <a href="/web/session/logout?redirect=/">Logout</a>
+                        </div>
+                    </aside>
+
+                    <div class="cems-hub-main">
+                        <header class="cems-hub-topbar">
+                            <div class="d-flex align-items-center gap-2">
+                                <button type="button"
+                                        class="cems-hub-menu-toggle"
+                                        id="o_cems_hub_menu_toggle"
+                                        aria-label="Open menu">
+                                    Menu
+                                </button>
+                                <h1 t-esc="page_title or 'Dashboard'"/>
+                            </div>
+                            <div class="cems-hub-topbar-actions">
+                                <span class="cems-hub-user" t-esc="cems_user_name"/>
+                                <a t-if="cems_is_internal" href="/web" class="btn btn-sm btn-outline-secondary d-none d-md-inline-flex">
+                                    Back Office
+                                </a>
+                                <a href="/web/session/logout?redirect=/" class="btn btn-sm btn-outline-secondary">
+                                    Logout
+                                </a>
+                            </div>
+                        </header>
+                        <div class="cems-hub-content">
+                            <t t-out="0"/>
+                        </div>
+                    </div>
+                </div>
+                <script type="text/javascript">
+                    (function () {
+                        var shell = document.getElementById('o_cems_portal_shell');
+                        var btn = document.getElementById('o_cems_hub_menu_toggle');
+                        if (shell &amp;&amp; btn) {
+                            btn.addEventListener('click', function () {
+                                shell.classList.toggle('sidebar-open');
+                            });
+                        }
+                    })();
+                </script>
+            </div>
+        </t>
+    </template>
+
+    <!-- /my Dashboard -->
+    <template id="cems_portal_hub_home" name="CEMS Portal Hub Home">
+        <t t-call="construction_hrd.cems_portal_layout">
+            <div class="cems-hub-stats">
+                <div class="cems-hub-stat">
+                    <div class="cems-hub-stat-icon projects">P</div>
+                    <div>
+                        <p class="cems-hub-stat-label">My Projects</p>
+                        <p class="cems-hub-stat-value" t-esc="project_count"/>
+                    </div>
+                </div>
+                <div class="cems-hub-stat">
+                    <div class="cems-hub-stat-icon tasks">T</div>
+                    <div>
+                        <p class="cems-hub-stat-label">Open Tasks</p>
+                        <p class="cems-hub-stat-value" t-esc="open_task_count"/>
+                    </div>
+                </div>
+                <div class="cems-hub-stat">
+                    <div class="cems-hub-stat-icon attendance">A</div>
+                    <div>
+                        <p class="cems-hub-stat-label">Attendance</p>
+                        <p class="cems-hub-stat-value">
+                            <t t-if="checked_in">In</t>
+                            <t t-else="">Out</t>
+                        </p>
+                    </div>
+                </div>
+                <div class="cems-hub-stat">
+                    <div class="cems-hub-stat-icon gates">G</div>
+                    <div>
+                        <p class="cems-hub-stat-label">Active Gate Passes</p>
+                        <p class="cems-hub-stat-value" t-esc="gate_pass_count"/>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cems-hub-panel">
+                <h2>Site Attendance</h2>
+                <a t-att-href="'/my/cems/attendance'"
+                   t-att-class="'cems-hub-clock out' if checked_in else 'cems-hub-clock'">
+                    <t t-if="checked_in">Go to Clock Out</t>
+                    <t t-else="">Go to Clock In</t>
+                </a>
+                <p t-if="checked_in and open_attendance" class="cems-hub-muted mt-2 mb-0">
+                    Checked in since <span t-field="open_attendance.check_in"/>
+                </p>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-12 col-lg-6">
+                    <div class="cems-hub-panel h-100">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h2 class="mb-0">My Projects</h2>
+                            <a href="/my/projects" class="cems-hub-link">View all</a>
+                        </div>
+                        <ul class="cems-hub-list" t-if="hub_projects">
+                            <t t-foreach="hub_projects" t-as="project">
+                                <li>
+                                    <a t-att-href="'/my/projects/%s' % project.id"
+                                       t-esc="project.display_name"/>
+                                </li>
+                            </t>
+                        </ul>
+                        <p t-else="" class="cems-hub-muted mb-0">No projects assigned yet.</p>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <div class="cems-hub-panel h-100">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h2 class="mb-0">My Tasks</h2>
+                            <a href="/my/tasks" class="cems-hub-link">View all</a>
+                        </div>
+                        <ul class="cems-hub-list" t-if="hub_tasks">
+                            <t t-foreach="hub_tasks" t-as="task">
+                                <li>
+                                    <a t-att-href="'/my/tasks/%s' % task.id" t-esc="task.display_name"/>
+                                </li>
+                            </t>
+                        </ul>
+                        <p t-else="" class="cems-hub-muted mb-0">No open tasks.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div t-if="cems_can_daily_labor" class="cems-hub-panel mt-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h2 class="mb-1">Daily Labor</h2>
+                        <p class="cems-hub-muted mb-0">Review site headcount reports (read list).</p>
+                    </div>
+                    <a href="/my/cems/daily_labor" class="btn btn-sm" style="background:#0d9488;color:#fff;font-weight:700;">Open list</a>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Gate passes list -->
+    <template id="cems_portal_gate_passes" name="CEMS Portal Gate Passes">
+        <t t-call="construction_hrd.cems_portal_layout">
+            <div class="cems-hub-panel">
+                <h2>Gate Passes</h2>
+                <p class="cems-hub-muted">Read-only list for Phase 2. Create/approve in Back Office if you have access.</p>
+                <div t-if="not gate_passes" class="alert alert-light border mb-0">
+                    No gate passes found.
+                </div>
+                <div t-else="" class="table-responsive">
+                    <table class="cems-hub-table">
+                        <thead>
+                            <tr>
+                                <th>Reference</th>
+                                <th>Date</th>
+                                <th>Project</th>
+                                <th>Type</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="gate_passes" t-as="gp">
+                                <tr>
+                                    <td t-esc="gp.name"/>
+                                    <td><span t-field="gp.date"/></td>
+                                    <td t-esc="gp.project_id.display_name"/>
+                                    <td t-esc="gp.pass_type"/>
+                                    <td>
+                                        <span t-att-class="'cems-hub-badge ok' if gp.state == 'approved' else 'cems-hub-badge'"
+                                              t-esc="gp.state"/>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Daily labor list (engineer+) -->
+    <template id="cems_portal_daily_labor" name="CEMS Portal Daily Labor">
+        <t t-call="construction_hrd.cems_portal_layout">
+            <div class="cems-hub-panel">
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+                    <h2 class="mb-0">Daily Labor Reports</h2>
+                    <a t-if="cems_is_internal" href="/web" class="cems-hub-link">Create / edit in Back Office</a>
+                </div>
+                <p class="cems-hub-muted">List filtered by your CEMS record rules. Creating reports stays in Back Office.</p>
+                <div t-if="not labor_reports" class="alert alert-light border mb-0">
+                    No daily labor reports visible.
+                </div>
+                <div t-else="" class="table-responsive">
+                    <table class="cems-hub-table">
+                        <thead>
+                            <tr>
+                                <th>Reference</th>
+                                <th>Date</th>
+                                <th>Project</th>
+                                <th>Headcount</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="labor_reports" t-as="lab">
+                                <tr>
+                                    <td t-esc="lab.name"/>
+                                    <td><span t-field="lab.date"/></td>
+                                    <td t-esc="lab.project_id.display_name"/>
+                                    <td t-esc="lab.total_headcount"/>
+                                    <td>
+                                        <span t-att-class="'cems-hub-badge ok' if lab.state == 'approved' else ('cems-hub-badge warn' if lab.state == 'submitted' else 'cems-hub-badge')"
+                                              t-esc="lab.state"/>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

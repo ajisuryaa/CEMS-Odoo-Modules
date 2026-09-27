@@ -1,30 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Portal home card -->
-    <template id="portal_my_home_cems_attendance" name="CEMS Site Attendance"
-              inherit_id="portal.portal_my_home" priority="45">
-        <xpath expr="//div[hasclass('o_portal_docs')]" position="before">
-            <t t-set="portal_client_category_enable" t-value="True"/>
-        </xpath>
-        <div id="portal_client_category" position="inside">
-            <t t-call="portal.portal_docs_entry">
-                <t t-set="icon" t-value="'/construction_hrd/static/src/img/attendance.svg'"/>
-                <t t-set="title">Site Attendance</t>
-                <t t-set="text">Geofenced check-in / check-out with selfie</t>
-                <t t-set="url" t-value="'/my/cems/attendance'"/>
-                <t t-set="config_card" t-value="True"/>
-            </t>
-        </div>
-    </template>
-
+    <!-- Site Attendance — wrapped in CEMS Hub shell -->
     <template id="portal_attendance_page" name="CEMS Site Attendance">
-        <t t-call="portal.portal_layout">
-            <t t-set="breadcrumbs_searchbar" t-value="True"/>
-            <t t-call="portal.portal_searchbar">
-                <t t-set="title">Site Attendance</t>
-            </t>
-
-            <div class="container o_cems_portal_attendance mt-3 mb-5" id="o_cems_portal_attendance"
+        <t t-call="construction_hrd.cems_portal_layout">
+            <div class="o_cems_portal_attendance" id="o_cems_portal_attendance"
                  t-att-data-has-open="1 if open_attendance else 0">
 
                 <div t-if="error" class="alert alert-danger" role="alert">
@@ -57,27 +36,25 @@
                 </div>
 
                 <t t-else="">
-                    <div class="card mb-3">
-                        <div class="card-body">
-                            <h5 class="card-title" t-esc="employee.name"/>
-                            <p class="mb-1">
-                                <strong>Site Project:</strong>
-                                <t t-if="project" t-esc="project.display_name"/>
-                                <t t-else=""><span class="text-danger">Not assigned</span></t>
-                            </p>
-                            <p t-if="project" class="mb-0 text-muted small">
-                                Geofence radius:
-                                <t t-esc="project.geofence_radius"/> m
-                                (center
-                                <t t-esc="'%.5f' % (project.geofence_latitude or 0)"/>,
-                                <t t-esc="'%.5f' % (project.geofence_longitude or 0)"/>)
-                            </p>
-                            <p t-if="open_attendance" class="mt-2 mb-0">
-                                <span class="badge text-bg-success">Checked in</span>
-                                since
-                                <span t-field="open_attendance.check_in"/>
-                            </p>
-                        </div>
+                    <div class="cems-hub-panel mb-3">
+                        <h2 t-esc="employee.name"/>
+                        <p class="mb-1">
+                            <strong>Site Project:</strong>
+                            <t t-if="project" t-esc="project.display_name"/>
+                            <t t-else=""><span class="text-danger">Not assigned</span></t>
+                        </p>
+                        <p t-if="project" class="mb-0 cems-hub-muted small">
+                            Geofence radius:
+                            <t t-esc="project.geofence_radius"/> m
+                            (center
+                            <t t-esc="'%.5f' % (project.geofence_latitude or 0)"/>,
+                            <t t-esc="'%.5f' % (project.geofence_longitude or 0)"/>)
+                        </p>
+                        <p t-if="open_attendance" class="mt-2 mb-0">
+                            <span class="cems-hub-badge ok">Checked in</span>
+                            since
+                            <span t-field="open_attendance.check_in"/>
+                        </p>
                     </div>
 
                     <div t-if="not project" class="alert alert-danger">
@@ -92,20 +69,20 @@
                           action="/my/cems/attendance/check_in"
                           method="post"
                           enctype="multipart/form-data"
-                          class="card card-body">
+                          class="cems-hub-panel">
                         <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                         <input type="hidden" name="latitude" id="o_cems_latitude" value=""/>
                         <input type="hidden" name="longitude" id="o_cems_longitude" value=""/>
 
-                        <h5 class="mb-3">Check In</h5>
-                        <p class="text-muted">
+                        <h2 class="mb-3">Check In</h2>
+                        <p class="cems-hub-muted">
                             Allow GPS, take a selfie, then submit. The server validates your
                             position against the project geofence.
                         </p>
 
                         <div class="mb-3 o_cems_selfie_camera" id="o_cems_selfie_camera">
-                            <label class="form-label">Selfie</label>
-                            <p class="text-muted small mb-2">
+                            <label class="form-label fw-semibold">Selfie</label>
+                            <p class="cems-hub-muted small mb-2">
                                 Open the camera, then capture your face. File picker is not used.
                             </p>
                             <div class="o_cems_camera_preview mb-2">
@@ -113,8 +90,8 @@
                                        class="o_cems_camera_video w-100 rounded border"
                                        playsinline="playsinline"
                                        autoplay="autoplay"
-                                       muted="muted"></video>
-                                <canvas id="o_cems_camera_canvas" class="d-none"></canvas>
+                                       muted="muted"/>
+                                <canvas id="o_cems_camera_canvas" class="d-none"/>
                                 <img id="o_cems_camera_snapshot"
                                      class="o_cems_camera_snapshot w-100 rounded border d-none"
                                      alt="Selfie preview"/>
@@ -133,11 +110,10 @@
                                     Retake
                                 </button>
                             </div>
-                            <div class="small text-danger d-none" id="o_cems_camera_error"></div>
+                            <div class="small text-danger d-none" id="o_cems_camera_error"/>
                             <div class="small text-success d-none" id="o_cems_camera_ok">
                                 Selfie captured. You can check in.
                             </div>
-                            <!-- Populated by JS from canvas; submitted as multipart file -->
                             <input type="file"
                                    class="d-none"
                                    name="selfie"
@@ -156,7 +132,7 @@
                                     GPS not ready — click Enable GPS
                                 </span>
                             </div>
-                            <div class="small text-muted">
+                            <div class="small cems-hub-muted">
                                 Use http://localhost:8069 (or HTTPS). Allow Location when the browser asks.
                             </div>
                         </div>
@@ -173,11 +149,11 @@
                           id="o_cems_check_out_form"
                           action="/my/cems/attendance/check_out"
                           method="post"
-                          class="card card-body">
+                          class="cems-hub-panel">
                         <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                         <input type="hidden" name="latitude" id="o_cems_out_latitude" value=""/>
                         <input type="hidden" name="longitude" id="o_cems_out_longitude" value=""/>
-                        <h5 class="mb-3">Check Out</h5>
+                        <h2 class="mb-3">Check Out</h2>
                         <div class="mb-3 o_cems_gps_box">
                             <div class="d-flex flex-wrap align-items-center gap-2">
                                 <button type="button"

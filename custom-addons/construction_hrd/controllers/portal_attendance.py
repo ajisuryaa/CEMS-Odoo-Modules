@@ -6,30 +6,20 @@ from odoo import _, http
 from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.http import request
 
+from .portal_mixin import CemsPortalMixin
+
 _logger = logging.getLogger(__name__)
 
 
-class CemsPortalAttendanceController(http.Controller):
+class CemsPortalAttendanceController(CemsPortalMixin, http.Controller):
     """Portal geofenced selfie attendance (CEMS Phase 2)."""
 
-    def _get_portal_employee(self):
-        """Return the hr.employee linked to the current portal/internal user."""
-        user = request.env.user
-        if user._is_public():
-            return request.env['hr.employee']
-        return request.env['hr.employee'].sudo().search(
-            [('user_id', '=', user.id)],
-            limit=1,
-        )
-
     def _ensure_own_employee(self, employee):
-        """Raise AccessError unless employee belongs to the current user."""
         if not employee or employee.user_id != request.env.user:
             raise AccessError(_('Access denied.'))
         return employee
 
     def _parse_required_gps(self, post):
-        """Parse required latitude/longitude. Return (lat, lon) or None if invalid."""
         raw_lat = post.get('latitude')
         raw_lon = post.get('longitude')
         if raw_lat in (None, '') or raw_lon in (None, ''):
@@ -40,7 +30,6 @@ class CemsPortalAttendanceController(http.Controller):
             return None
 
     def _read_selfie(self, post):
-        """Return (base64_bytes, filename) from multipart upload, or (None, None)."""
         selfie = post.get('selfie')
         if not selfie or not hasattr(selfie, 'read'):
             return None, None
@@ -64,21 +53,24 @@ class CemsPortalAttendanceController(http.Controller):
         website=True,
     )
     def portal_attendance_page(self, **kwargs):
-        employee = self._get_portal_employee()
+        employee = self._cems_get_employee()
         open_att = request.env['hr.attendance']
         if employee:
             open_att = request.env['hr.attendance'].sudo().search([
                 ('employee_id', '=', employee.id),
                 ('check_out', '=', False),
             ], limit=1)
-        values = {
+        values = self._cems_prepare_shell_values(
+            page_name='cems_attendance',
+            page_title=_('Site Attendance'),
+        )
+        values.update({
             'employee': employee,
             'project': employee.cems_get_attendance_project() if employee else False,
             'open_attendance': open_att,
-            'page_name': 'cems_attendance',
             'error': kwargs.get('error'),
             'success': kwargs.get('success'),
-        }
+        })
         return request.render('construction_hrd.portal_attendance_page', values)
 
     @http.route(
@@ -90,7 +82,7 @@ class CemsPortalAttendanceController(http.Controller):
         csrf=True,
     )
     def portal_check_in(self, **post):
-        employee = self._get_portal_employee()
+        employee = self._cems_get_employee()
         if not employee:
             return self._attendance_redirect(error='no_employee')
         self._ensure_own_employee(employee)
@@ -141,7 +133,7 @@ class CemsPortalAttendanceController(http.Controller):
         csrf=True,
     )
     def portal_check_out(self, **post):
-        employee = self._get_portal_employee()
+        employee = self._cems_get_employee()
         self._ensure_own_employee(employee)
 
         latitude = longitude = None
@@ -180,8 +172,7 @@ class CemsPortalAttendanceController(http.Controller):
         auth='user',
     )
     def portal_check_in_json(self, latitude, longitude, selfie_b64=None, filename=None):
-        """JSON endpoint for the frontend geolocation script."""
-        employee = self._get_portal_employee()
+        employee = self._cems_get_employee()
         if not employee or employee.user_id != request.env.user:
             return {'ok': False, 'error': 'access_denied'}
         try:

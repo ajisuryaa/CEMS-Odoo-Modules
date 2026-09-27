@@ -1,6 +1,7 @@
 # 10 — Plan: CEMS Portal Hub (`/my`) — Role-Based Shell (Phase 1–2 scope)
 
-**Status:** Planning document (belum implementasi)  
+**Status:** Implemented (slices A–G, Phase 1–2 menu scope) — 2026-09-27  
+**Addon version:** `construction_hrd` 19.0.1.7.0  
 **Produk:** CEMS — PT Dynatech Batam  
 **Odoo:** 19 Community  
 **Dokumen terkait:**  
@@ -221,15 +222,28 @@ Kerjakan berurutan; tiap slice bisa di-review terpisah.
 
 ## 10. Kriteria selesai (Definition of Done)
 
-- [ ] User belum login yang buka `/my` → redirect login Odoo/portal (perilaku standar).
-- [ ] Setelah `/cems/login` sukses → `/my` menampilkan CEMS Hub shell (bukan portal home default polos).
-- [ ] Sidebar Portal Worker **tanpa** Daily Labor; dengan Attendance + Projects + Tasks.
-- [ ] Sidebar Engineer+ menampilkan Daily Labor (jika slice F dikerjakan) atau minimal Dashboard + Progress links.
-- [ ] Tidak ada menu HSE / Material / Drawing / Executive S-Curve.
-- [ ] Attendance existing tetap berfungsi (GPS + selfie + Haversine).
-- [ ] Upgrade modul: `-u construction_hrd` tanpa mengubah core Odoo.
-- [ ] Ada test akses dasar (slice G).
+- [x] User belum login yang buka `/my` → redirect login Odoo/portal (perilaku standar).
+- [x] Setelah `/cems/login` sukses → `/my` menampilkan CEMS Hub shell (bukan portal home default polos).
+- [x] Sidebar Portal Worker **tanpa** Daily Labor; dengan Attendance + Projects + Tasks.
+- [x] Sidebar Engineer+ menampilkan Daily Labor (list read).
+- [x] Tidak ada menu HSE / Material / Drawing / Executive S-Curve.
+- [x] Attendance existing tetap berfungsi (GPS + selfie + Haversine) di dalam shell.
+- [x] Upgrade modul: `-u construction_hrd` tanpa mengubah core Odoo.
+- [x] Ada test akses dasar (menu DLR portal vs engineer).
 
+---
+
+## 14. Implementasi (changelog)
+
+| File | Peran |
+|------|--------|
+| `controllers/portal_mixin.py` | Menu matrix + stats helpers |
+| `controllers/portal_hub.py` | Override `/my`, gate passes, daily labor |
+| `controllers/portal_attendance.py` | Attendance di shell yang sama |
+| `views/portal_hub_templates.xml` | Layout shell + hub home + lists |
+| `views/portal_templates.xml` | Attendance wrap |
+| `views/portal_shell_wrap.xml` | Wrap `/my/projects`, `/my/tasks`, `/my/account` in CEMS shell |
+| `tests/test_portal_hub_access.py` | Menu matrix assertions |
 ---
 
 ## 11. Risiko & keputusan terbuka
