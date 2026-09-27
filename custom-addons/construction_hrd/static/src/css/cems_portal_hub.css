@@ -383,8 +383,12 @@ body:has(.cems-portal-shell) main {
   }
 }
 
-@media (max-width: 575.98px) {
-  .cems-hub-stats {
-    grid-template-columns: 1fr;
-  }
+.cems-hub-content .o_portal_sidebar,
+.cems-hub-content .o_project_portal_sidebar {
+  max-width: 100%;
+}
+
+.cems-hub-content .o_portal_wrap,
+.cems-hub-content body.o_portal_sidebar {
+  display: contents;
 }

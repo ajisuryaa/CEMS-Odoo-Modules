@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- Wrap native portal pages in CEMS hub shell (sidebar stays consistent) -->
+
+    <!-- List: Projects -->
     <template id="cems_wrap_portal_my_projects" inherit_id="project.portal_my_projects">
         <xpath expr="//t[@t-call='portal.portal_layout']" position="before">
             <t t-set="page_title">My Projects</t>
@@ -10,6 +12,17 @@
         </xpath>
     </template>
 
+    <!-- Detail: Project (task list for one project) -->
+    <template id="cems_wrap_portal_my_project" inherit_id="project.portal_my_project">
+        <xpath expr="//t[@t-call='portal.portal_layout']" position="before">
+            <t t-set="page_title" t-value="project.display_name if project else 'Project'"/>
+        </xpath>
+        <xpath expr="//t[@t-call='portal.portal_layout']" position="attributes">
+            <attribute name="t-call">construction_hrd.cems_portal_layout</attribute>
+        </xpath>
+    </template>
+
+    <!-- List: Tasks (+ subtasks / recurrent reuse this template) -->
     <template id="cems_wrap_portal_my_tasks" inherit_id="project.portal_my_tasks">
         <xpath expr="//t[@t-call='portal.portal_layout']" position="before">
             <t t-set="page_title">My Tasks</t>
@@ -19,6 +32,17 @@
         </xpath>
     </template>
 
+    <!-- Detail: Task (inherits portal_sidebar → task_link_preview_portal_layout) -->
+    <template id="cems_wrap_portal_my_task" inherit_id="project.portal_my_task">
+        <xpath expr="//t[@t-call='project.task_link_preview_portal_layout']" position="before">
+            <t t-set="page_title" t-value="task.display_name if task else 'Task'"/>
+        </xpath>
+        <xpath expr="//t[@t-call='project.task_link_preview_portal_layout']" position="attributes">
+            <attribute name="t-call">construction_hrd.cems_portal_layout</attribute>
+        </xpath>
+    </template>
+
+    <!-- Profile -->
     <template id="cems_wrap_portal_my_details" inherit_id="portal.portal_my_details">
         <xpath expr="//t[@t-call='portal.portal_layout']" position="before">
             <t t-set="page_title">My Profile</t>

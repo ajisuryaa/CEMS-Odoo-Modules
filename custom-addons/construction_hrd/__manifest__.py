@@ -1,6 +1,6 @@
 {
     'name': 'CEMS Construction HRD',
-    'version': '19.0.1.7.1',
+    'version': '19.0.1.7.4',
     'category': 'Human Resources',
     'summary': 'Site workforce, geofence attendance portal, daily labor & gate pass',
     'description': """
@@ -9,8 +9,9 @@ CEMS Phase 2 — Construction HRD
 Site workforce module for PT Dynatech Batam CEMS:
 
 * Website homepage (/) CEMS split login (Odoo DB auth)
-* Portal Hub (/my) role-based sidebar shell (Phase 1–2 menus)
-* Projects / Tasks / Profile wrapped in the same CEMS shell
+* Stock /web/login redirects to CEMS homepage (/)
+* Portal Hub (/my) self-sufficient shell (menu via ir.http / layout C)
+* Projects / Tasks / Profile (+ project & task detail) wrapped in CEMS shell
 * Site assignment via project Site Team (construction_progress)
 * Geofenced selfie attendance via Portal (Haversine vs project geofence)
 * Daily Labor Report (DLR) — headcount by trade / hire type

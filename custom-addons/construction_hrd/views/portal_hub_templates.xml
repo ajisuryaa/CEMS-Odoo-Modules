@@ -1,10 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Shared CEMS Portal Hub shell (sidebar + topbar) -->
+    <!-- Shared CEMS Portal Hub shell (sidebar + topbar)
+         Approach C: layout is self-sufficient — always load menu via ir.http -->
     <template id="cems_portal_layout" name="CEMS Portal Hub Layout">
         <t t-call="website.layout">
             <t t-set="no_header" t-value="True"/>
             <t t-set="no_footer" t-value="True"/>
+            <!-- Fill / refresh shell context from current user + page_name -->
+            <t t-set="_cems_shell"
+               t-value="request.env['ir.http']._cems_portal_shell_values(page_name, page_title)"/>
+            <t t-set="cems_menu" t-value="_cems_shell.get('cems_menu')"/>
+            <t t-set="cems_user_name" t-value="_cems_shell.get('cems_user_name')"/>
+            <t t-set="cems_is_internal" t-value="_cems_shell.get('cems_is_internal')"/>
+            <t t-set="cems_is_portal" t-value="_cems_shell.get('cems_is_portal')"/>
+            <t t-set="cems_can_daily_labor" t-value="_cems_shell.get('cems_can_daily_labor')"/>
+            <t t-set="cems_active_menu" t-value="_cems_shell.get('cems_active_menu')"/>
+            <t t-set="page_title" t-value="page_title or _cems_shell.get('page_title')"/>
             <div id="wrap">
                 <div class="cems-portal-shell" id="o_cems_portal_shell">
                     <aside class="cems-hub-sidebar" aria-label="CEMS navigation">
@@ -13,20 +24,7 @@
                             CEMS <span>Portal</span>
                         </a>
                         <ul class="cems-hub-nav">
-                            <!-- Map Odoo portal page_name → sidebar id (set after layout values) -->
-                            <t t-set="cems_active" t-value="{
-                                'home': 'home',
-                                'project': 'projects',
-                                'projects': 'projects',
-                                'task': 'tasks',
-                                'tasks': 'tasks',
-                                'project_task': 'tasks',
-                                'my_details': 'account',
-                                'account': 'account',
-                                'cems_attendance': 'cems_attendance',
-                                'cems_gate_passes': 'cems_gate_passes',
-                                'cems_daily_labor': 'cems_daily_labor',
-                            }.get(page_name, cems_active_menu or 'home')"/>
+                            <t t-set="cems_active" t-value="cems_active_menu or 'home'"/>
                             <t t-foreach="cems_menu or []" t-as="item">
                                 <li>
                                     <a t-att-href="item['url']"

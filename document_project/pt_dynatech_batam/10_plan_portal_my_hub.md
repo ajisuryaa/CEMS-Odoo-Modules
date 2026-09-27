@@ -242,7 +242,9 @@ Kerjakan berurutan; tiap slice bisa di-review terpisah.
 | `controllers/portal_attendance.py` | Attendance di shell yang sama |
 | `views/portal_hub_templates.xml` | Layout shell + hub home + lists |
 | `views/portal_templates.xml` | Attendance wrap |
-| `views/portal_shell_wrap.xml` | Wrap `/my/projects`, `/my/tasks`, `/my/account` in CEMS shell |
+| `models/ir_http.py` | Shell menu builder for QWeb (approach **C** — layout self-sufficient) |
+| `views/portal_shell_wrap.xml` | Wrap `/my/projects`, `/my/tasks`, `/my/account` + project/task **detail** |
+| `controllers/website_home.py` | `/web/login` → `/?redirect=…` (CEMS homepage) |
 | `tests/test_portal_hub_access.py` | Menu matrix assertions |
 ---
 
