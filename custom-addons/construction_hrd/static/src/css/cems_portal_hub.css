@@ -48,10 +48,10 @@ body:has(.cems-portal-shell) main {
 }
 
 .cems-hub-brand {
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.03em;
   color: var(--cems-ink);
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   text-decoration: none;
   padding: 0.35rem 0.65rem 1.25rem;
   display: flex;
@@ -90,8 +90,8 @@ body:has(.cems-portal-shell) main {
   border-radius: 0.55rem;
   color: #334155;
   text-decoration: none;
-  font-weight: 600;
-  font-size: 0.95rem;
+  font-weight: 500;
+  font-size: 0.9rem;
   border-right: 3px solid transparent;
 }
 
@@ -104,13 +104,32 @@ body:has(.cems-portal-shell) main {
   background: rgba(13, 148, 136, 0.14);
   color: var(--cems-leaf);
   border-right-color: var(--cems-leaf);
+  font-weight: 600;
 }
 
 .cems-hub-nav-icon {
   width: 1.25rem;
-  text-align: center;
-  opacity: 0.75;
-  font-size: 0.85rem;
+  height: 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  opacity: 0.8;
+  color: inherit;
+}
+
+.cems-hub-nav-icon svg {
+  width: 1.15rem;
+  height: 1.15rem;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.cems-hub-nav a.active .cems-hub-nav-icon {
+  opacity: 1;
 }
 
 .cems-hub-sidebar-foot {
@@ -121,11 +140,11 @@ body:has(.cems-portal-shell) main {
 
 .cems-hub-sidebar-foot a {
   display: block;
-  font-weight: 600;
+  font-weight: 500;
   color: #64748b;
   text-decoration: none;
   padding: 0.45rem 0.1rem;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
 }
 
 .cems-hub-sidebar-foot a:hover {
@@ -154,8 +173,8 @@ body:has(.cems-portal-shell) main {
 }
 
 .cems-hub-topbar h1 {
-  font-size: 1.25rem;
-  font-weight: 800;
+  font-size: 1.15rem;
+  font-weight: 700;
   margin: 0;
   letter-spacing: -0.02em;
 }
@@ -168,8 +187,8 @@ body:has(.cems-portal-shell) main {
 }
 
 .cems-hub-user {
-  font-weight: 600;
-  font-size: 0.9rem;
+  font-weight: 500;
+  font-size: 0.875rem;
   color: #475569;
 }
 
@@ -203,9 +222,17 @@ body:has(.cems-portal-shell) main {
   align-items: center;
   justify-content: center;
   color: #fff;
-  font-weight: 800;
-  font-size: 0.85rem;
   flex-shrink: 0;
+}
+
+.cems-hub-stat-icon svg {
+  width: 1.35rem;
+  height: 1.35rem;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .cems-hub-stat-icon.projects { background: #0f766e; }
@@ -214,15 +241,15 @@ body:has(.cems-portal-shell) main {
 .cems-hub-stat-icon.gates { background: #6366f1; }
 
 .cems-hub-stat-label {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: #64748b;
-  font-weight: 600;
+  font-weight: 500;
   margin: 0;
 }
 
 .cems-hub-stat-value {
-  font-size: 1.5rem;
-  font-weight: 800;
+  font-size: 1.35rem;
+  font-weight: 700;
   margin: 0;
   letter-spacing: -0.03em;
   line-height: 1.2;
@@ -238,8 +265,8 @@ body:has(.cems-portal-shell) main {
 }
 
 .cems-hub-panel h2 {
-  font-size: 1.05rem;
-  font-weight: 800;
+  font-size: 1rem;
+  font-weight: 700;
   margin: 0 0 0.85rem;
 }
 
@@ -249,8 +276,8 @@ body:has(.cems-portal-shell) main {
   text-align: center;
   padding: 1.35rem 1rem;
   border-radius: 0.75rem;
-  font-weight: 800;
-  font-size: 1.25rem;
+  font-weight: 700;
+  font-size: 1.15rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   text-decoration: none;
@@ -284,7 +311,7 @@ body:has(.cems-portal-shell) main {
 
 .cems-hub-list a {
   color: var(--cems-ink);
-  font-weight: 600;
+  font-weight: 500;
   text-decoration: none;
 }
 
@@ -299,7 +326,7 @@ body:has(.cems-portal-shell) main {
 
 .cems-hub-link {
   color: var(--cems-leaf) !important;
-  font-weight: 700;
+  font-weight: 600;
   text-decoration: none;
 }
 
@@ -329,7 +356,7 @@ body:has(.cems-portal-shell) main {
   padding: 0.2rem 0.55rem;
   border-radius: 999px;
   font-size: 0.75rem;
-  font-weight: 700;
+  font-weight: 600;
   background: #e2e8f0;
   color: #334155;
 }
@@ -343,7 +370,7 @@ body:has(.cems-portal-shell) main {
   background: #fff;
   border-radius: 0.5rem;
   padding: 0.4rem 0.65rem;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 /* Mobile */
