@@ -74,6 +74,32 @@ class CemsPortalAttendanceController(CemsPortalMixin, http.Controller):
         return request.render('construction_hrd.portal_attendance_page', values)
 
     @http.route(
+        '/my/cems/attendance/history',
+        type='http',
+        auth='user',
+        website=True,
+    )
+    def portal_attendance_history(self, **kwargs):
+        employee = self._cems_get_employee()
+        Attendance = request.env['hr.attendance']
+        records = Attendance.browse()
+        if employee:
+            records = Attendance.sudo().search(
+                [('employee_id', '=', employee.id)],
+                order='check_in desc',
+                limit=60,
+            )
+        values = self._cems_prepare_shell_values(
+            page_name='cems_attendance',
+            page_title=_('Attendance History'),
+        )
+        values.update({
+            'employee': employee,
+            'attendance_history': records,
+        })
+        return request.render('construction_hrd.portal_attendance_history', values)
+
+    @http.route(
         '/my/cems/attendance/check_in',
         type='http',
         auth='user',

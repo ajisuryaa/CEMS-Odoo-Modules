@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 180" fill="none" aria-hidden="true">
+  <!-- Soft attendance motif: clock + site pin + check -->
+  <circle cx="218" cy="88" r="62" stroke="#0d9488" stroke-width="1.25" opacity="0.22"/>
+  <circle cx="218" cy="88" r="46" stroke="#0d9488" stroke-width="1.25" opacity="0.18"/>
+  <circle cx="218" cy="88" r="6" fill="#0d9488" opacity="0.2"/>
+  <path d="M218 52v36l26 14" stroke="#0d9488" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.28"/>
+  <path d="M92 128c0-28 22-50 50-50s50 22 50 50c0 34-50 58-50 58s-50-24-50-58z" stroke="#0d9488" stroke-width="1.5" opacity="0.2"/>
+  <circle cx="142" cy="124" r="14" stroke="#0d9488" stroke-width="1.5" opacity="0.22"/>
+  <path d="M54 46l10 10 18-20" stroke="#14b8a6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.3"/>
+  <rect x="36" y="28" width="52" height="52" rx="14" stroke="#14b8a6" stroke-width="1.5" opacity="0.22"/>
+  <path d="M268 34h28M282 20v28" stroke="#0d9488" stroke-width="2" stroke-linecap="round" opacity="0.18"/>
+</svg>

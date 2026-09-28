@@ -152,16 +152,70 @@
                 </div>
             </div>
 
-            <div class="cems-hub-panel">
-                <h2>Site Attendance</h2>
-                <a t-att-href="'/my/cems/attendance'"
-                   t-att-class="'cems-hub-clock out' if checked_in else 'cems-hub-clock'">
-                    <t t-if="checked_in">Go to Clock Out</t>
-                    <t t-else="">Go to Clock In</t>
-                </a>
-                <p t-if="checked_in and open_attendance" class="cems-hub-muted mt-2 mb-0">
-                    Checked in since <span t-field="open_attendance.check_in"/>
-                </p>
+            <div class="cems-hub-panel cems-hub-attendance">
+                <div class="cems-hub-att-header">
+                    <h2 class="mb-0">Site Attendance</h2>
+                    <a href="/my/cems/attendance/history" class="cems-hub-att-history">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <circle cx="12" cy="12" r="9"/>
+                            <path d="M12 7v5l3 2"/>
+                            <path d="M4.5 8.5A9 9 0 0 1 12 3"/>
+                        </svg>
+                        View history
+                    </a>
+                </div>
+
+                <div class="cems-hub-att-body">
+                    <div class="cems-hub-att-deco" aria-hidden="true">
+                        <img src="/construction_hrd/static/src/img/attendance_deco.svg"
+                             alt=""
+                             width="320"
+                             height="180"/>
+                    </div>
+
+                    <div class="cems-hub-att-clock">
+                        <p class="cems-hub-att-time" id="o_cems_hub_clock">--:--:--</p>
+                        <p class="cems-hub-att-date" id="o_cems_hub_date">&#160;</p>
+                    </div>
+
+                    <div class="cems-hub-att-status">
+                        <t t-if="checked_in">
+                            <span class="cems-hub-att-pill ok">Already checked in</span>
+                            <p t-if="open_attendance" class="cems-hub-att-meta mb-0">
+                                Since <span t-field="open_attendance.check_in"/>
+                            </p>
+                        </t>
+                        <t t-else="">
+                            <span class="cems-hub-att-pill muted">Haven't checked in</span>
+                            <p class="cems-hub-att-meta mb-0">Ready when you arrive on site</p>
+                        </t>
+                    </div>
+
+                    <div class="cems-hub-att-actions">
+                        <t t-if="not checked_in">
+                            <a href="/my/cems/attendance" class="cems-hub-att-btn primary">
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M12 5v14M5 12h14"/>
+                                </svg>
+                                Check In
+                            </a>
+                            <span class="cems-hub-att-btn ghost disabled" aria-disabled="true">
+                                Check Out
+                            </span>
+                        </t>
+                        <t t-else="">
+                            <span class="cems-hub-att-btn ghost disabled" aria-disabled="true">
+                                Check In
+                            </span>
+                            <a href="/my/cems/attendance" class="cems-hub-att-btn dark">
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M5 12h14"/>
+                                </svg>
+                                Check Out
+                            </a>
+                        </t>
+                    </div>
+                </div>
             </div>
 
             <div class="row g-3">

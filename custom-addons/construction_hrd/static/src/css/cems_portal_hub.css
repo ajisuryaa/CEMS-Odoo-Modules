@@ -270,25 +270,227 @@ body:has(.cems-portal-shell) main {
   margin: 0 0 0.85rem;
 }
 
-.cems-hub-clock {
-  display: block;
-  width: 100%;
-  text-align: center;
-  padding: 1.35rem 1rem;
-  border-radius: 0.75rem;
-  font-weight: 700;
-  font-size: 1.15rem;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  text-decoration: none;
-  color: #fff !important;
-  background: var(--cems-ok);
-  box-shadow: 0 8px 24px rgba(22, 163, 74, 0.3);
+/* Site Attendance panel (dashboard) */
+.cems-hub-attendance .cems-hub-att-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
 }
 
-.cems-hub-clock.out {
-  background: var(--cems-ink);
-  box-shadow: 0 8px 24px rgba(15, 28, 26, 0.25);
+.cems-hub-att-history {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--cems-leaf) !important;
+  font-weight: 500;
+  font-size: 0.875rem;
+  text-decoration: none;
+}
+
+.cems-hub-att-history:hover {
+  color: #0f766e !important;
+}
+
+.cems-hub-att-history svg {
+  width: 1rem;
+  height: 1rem;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.cems-hub-att-body {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: minmax(9rem, 1fr) minmax(10rem, 1.1fr) minmax(16rem, 1.5fr);
+  gap: 1rem 1.35rem;
+  align-items: center;
+  padding: 1.25rem 1.35rem;
+  border-radius: 0.75rem;
+  background:
+    radial-gradient(ellipse 70% 90% at 92% 50%, rgba(20, 184, 166, 0.16), transparent 55%),
+    linear-gradient(135deg, #f7fbfa 0%, #e8f5f2 48%, #dff3ee 100%);
+  border: 1px solid #cfe5e0;
+  isolation: isolate;
+}
+
+.cems-hub-att-deco {
+  position: absolute;
+  right: -0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: min(42%, 280px);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.9;
+}
+
+.cems-hub-att-deco img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.cems-hub-att-clock,
+.cems-hub-att-status,
+.cems-hub-att-actions {
+  position: relative;
+  z-index: 1;
+}
+
+.cems-hub-att-clock {
+  text-align: left;
+}
+
+.cems-hub-att-time {
+  margin: 0;
+  font-size: clamp(1.7rem, 3.2vw, 2.05rem);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  color: var(--cems-ink);
+}
+
+.cems-hub-att-date {
+  margin: 0.35rem 0 0;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #64748b;
+}
+
+.cems-hub-att-status {
+  min-width: 0;
+}
+
+.cems-hub-att-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.cems-hub-att-pill.ok {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.cems-hub-att-pill.muted {
+  background: rgba(255, 255, 255, 0.85);
+  color: #475569;
+  border: 1px solid #d4dde7;
+}
+
+.cems-hub-att-meta {
+  margin-top: 0.45rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #64748b;
+}
+
+.cems-hub-att-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  justify-content: flex-end;
+}
+
+.cems-hub-attendance .cems-hub-att-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  min-width: 8.75rem;
+  padding: 0.85rem 1.25rem;
+  border-radius: 0.65rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none !important;
+  border: 2px solid transparent;
+  line-height: 1.2;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+
+.cems-hub-attendance .cems-hub-att-btn svg {
+  width: 1.1rem;
+  height: 1.1rem;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2.25;
+  stroke-linecap: round;
+}
+
+.cems-hub-attendance a.cems-hub-att-btn.primary {
+  background-color: #16a34a !important;
+  background-image: linear-gradient(180deg, #22c55e 0%, #16a34a 100%) !important;
+  color: #ffffff !important;
+  border-color: #15803d;
+  box-shadow: 0 10px 24px rgba(22, 163, 74, 0.38);
+}
+
+.cems-hub-attendance a.cems-hub-att-btn.primary:hover {
+  background-color: #15803d !important;
+  background-image: linear-gradient(180deg, #16a34a 0%, #15803d 100%) !important;
+  color: #ffffff !important;
+  transform: translateY(-1px);
+}
+
+.cems-hub-attendance a.cems-hub-att-btn.dark {
+  background-color: #0f1c1a !important;
+  background-image: linear-gradient(180deg, #1e293b 0%, #0f1c1a 100%) !important;
+  color: #ffffff !important;
+  border-color: #0f172a;
+  box-shadow: 0 10px 24px rgba(15, 28, 26, 0.32);
+}
+
+.cems-hub-attendance a.cems-hub-att-btn.dark:hover {
+  background-color: #1e293b !important;
+  color: #ffffff !important;
+  transform: translateY(-1px);
+}
+
+.cems-hub-attendance .cems-hub-att-btn.ghost {
+  background: rgba(255, 255, 255, 0.72);
+  color: #64748b !important;
+  border-color: #cbd5e1;
+}
+
+.cems-hub-attendance .cems-hub-att-btn.disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  pointer-events: none;
+  box-shadow: none;
+  transform: none;
+}
+
+@media (max-width: 991.98px) {
+  .cems-hub-att-body {
+    grid-template-columns: 1fr;
+    text-align: left;
+  }
+
+  .cems-hub-att-deco {
+    width: 55%;
+    right: -8%;
+    opacity: 0.55;
+  }
+
+  .cems-hub-att-actions {
+    justify-content: stretch;
+  }
+
+  .cems-hub-attendance .cems-hub-att-btn {
+    flex: 1 1 auto;
+  }
 }
 
 .cems-hub-list {
