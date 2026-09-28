@@ -165,6 +165,29 @@
                     </a>
                 </div>
 
+                <div t-if="error" class="alert alert-danger py-2 mb-3" role="alert">
+                    <t t-if="error == 'outside_geofence'">
+                        You are outside the site geofence. Move closer to the project site and try again.
+                    </t>
+                    <t t-elif="error == 'no_employee'">
+                        No employee record is linked to your user. Contact HR / your supervisor.
+                    </t>
+                    <t t-elif="error == 'invalid_gps'">
+                        Invalid GPS coordinates. Allow location access and try again.
+                    </t>
+                    <t t-elif="error == 'check_in_failed'">
+                        Check-in failed. You may already have an open attendance.
+                    </t>
+                    <t t-elif="error == 'checkout_failed'">
+                        Check-out failed. No open check-in was found.
+                    </t>
+                    <t t-else="">An error occurred. Please try again.</t>
+                </div>
+                <div t-if="success" class="alert alert-success py-2 mb-3" role="alert">
+                    <t t-if="success == 'checked_in'">Checked in successfully.</t>
+                    <t t-elif="success == 'checked_out'">Checked out successfully.</t>
+                </div>
+
                 <div class="cems-hub-att-body">
                     <div class="cems-hub-att-deco" aria-hidden="true">
                         <img src="/construction_hrd/static/src/img/attendance_deco.svg"
@@ -192,29 +215,105 @@
                     </div>
 
                     <div class="cems-hub-att-actions">
-                        <t t-if="not checked_in">
-                            <a href="/my/cems/attendance" class="cems-hub-att-btn primary">
-                                <svg viewBox="0 0 24 24" aria-hidden="true">
-                                    <path d="M12 5v14M5 12h14"/>
-                                </svg>
-                                Check In
-                            </a>
+                        <t t-if="not employee">
                             <span class="cems-hub-att-btn ghost disabled" aria-disabled="true">
-                                Check Out
+                                Link employee first
                             </span>
                         </t>
-                        <t t-else="">
+                        <t t-elif="not attendance_project and not checked_in">
                             <span class="cems-hub-att-btn ghost disabled" aria-disabled="true">
-                                Check In
+                                No site project
                             </span>
-                            <a href="/my/cems/attendance" class="cems-hub-att-btn dark">
+                        </t>
+                        <t t-elif="checked_in">
+                            <button type="button"
+                                    class="cems-hub-att-btn dark"
+                                    id="o_cems_att_open_btn"
+                                    data-mode="check_out">
                                 <svg viewBox="0 0 24 24" aria-hidden="true">
                                     <path d="M5 12h14"/>
                                 </svg>
                                 Check Out
-                            </a>
+                            </button>
+                        </t>
+                        <t t-else="">
+                            <button type="button"
+                                    class="cems-hub-att-btn primary"
+                                    id="o_cems_att_open_btn"
+                                    data-mode="check_in">
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M12 5v14M5 12h14"/>
+                                </svg>
+                                Check In
+                            </button>
                         </t>
                     </div>
+                </div>
+            </div>
+
+            <!-- Attendance camera dialog -->
+            <div class="cems-att-dialog" id="o_cems_att_dialog" hidden="hidden" aria-hidden="true">
+                <div class="cems-att-dialog-backdrop" id="o_cems_att_dialog_backdrop"/>
+                <div class="cems-att-dialog-card" role="dialog" aria-modal="true" aria-labelledby="o_cems_att_dialog_title">
+                    <div class="cems-att-dialog-head">
+                        <h3 id="o_cems_att_dialog_title">Check In</h3>
+                        <button type="button" class="cems-att-dialog-close" id="o_cems_att_dialog_close" aria-label="Close">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+                        </button>
+                    </div>
+
+                    <form id="o_cems_att_dialog_form"
+                          method="post"
+                          enctype="multipart/form-data"
+                          t-att-action="'/my/cems/attendance/check_out' if checked_in else '/my/cems/attendance/check_in'">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <input type="hidden" name="next" value="/my"/>
+                        <input type="hidden" name="latitude" id="o_cems_att_latitude" value=""/>
+                        <input type="hidden" name="longitude" id="o_cems_att_longitude" value=""/>
+                        <input type="file" class="d-none" name="selfie" id="o_cems_att_selfie" accept="image/*"/>
+
+                        <div class="cems-att-camera-stage">
+                            <video id="o_cems_att_video"
+                                   class="cems-att-video"
+                                   playsinline="playsinline"
+                                   autoplay="autoplay"
+                                   muted="muted"/>
+                            <canvas id="o_cems_att_canvas" class="d-none"/>
+                            <img id="o_cems_att_snapshot" class="cems-att-snapshot d-none" alt="Captured selfie"/>
+                            <div class="cems-att-face-guide" aria-hidden="true">
+                                <div class="cems-att-face-oval"/>
+                                <p class="cems-att-face-hint">Align your face in the oval</p>
+                            </div>
+                        </div>
+
+                        <p class="cems-att-gps-status mb-2" id="o_cems_att_gps_status">Requesting GPS…</p>
+                        <p class="cems-att-dialog-error d-none" id="o_cems_att_dialog_error"/>
+
+                        <div class="cems-att-dialog-actions">
+                            <button type="button"
+                                    class="cems-att-shutter"
+                                    id="o_cems_att_capture"
+                                    aria-label="Capture">
+                                <svg class="cems-att-icon-capture" viewBox="0 0 24 24" aria-hidden="true">
+                                    <circle cx="12" cy="12" r="8"/>
+                                    <circle cx="12" cy="12" r="4.5"/>
+                                </svg>
+                                <svg class="cems-att-icon-retake d-none" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M3 12a9 9 0 0 1 15.5-6.4"/>
+                                    <path d="M21 3v7h-7"/>
+                                    <path d="M21 12a9 9 0 0 1-15.5 6.4"/>
+                                    <path d="M3 21v-7h7"/>
+                                </svg>
+                            </button>
+                            <button type="submit"
+                                    class="cems-hub-att-btn primary d-none"
+                                    id="o_cems_att_submit"
+                                    disabled="disabled">
+                                <t t-if="checked_in">Check Out</t>
+                                <t t-else="">Check In</t>
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
 

@@ -31,6 +31,10 @@ class CemsPortalHub(CemsPortalMixin, CustomerPortal):
         )
         values.update(self._cems_hub_stats())
         values.update(self._cems_hub_lists(limit=5))
+        values.update({
+            'error': kw.get('error'),
+            'success': kw.get('success'),
+        })
         return request.render('construction_hrd.cems_portal_hub_home', values)
 
     @route(

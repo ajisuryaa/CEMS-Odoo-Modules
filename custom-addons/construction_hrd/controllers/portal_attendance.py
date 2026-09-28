@@ -39,12 +39,18 @@ class CemsPortalAttendanceController(CemsPortalMixin, http.Controller):
         filename = getattr(selfie, 'filename', None) or 'selfie.jpg'
         return base64.b64encode(raw), filename
 
-    def _attendance_redirect(self, *, error=None, success=None):
+    def _attendance_redirect(self, *, error=None, success=None, next_url=None):
+        base = '/my/cems/attendance'
+        candidate = next_url and str(next_url)
+        if candidate and candidate.startswith('/') and '//' not in candidate:
+            base = candidate
         if error:
-            return request.redirect(f'/my/cems/attendance?error={error}')
+            sep = '&' if '?' in base else '?'
+            return request.redirect(f'{base}{sep}error={error}')
         if success:
-            return request.redirect(f'/my/cems/attendance?success={success}')
-        return request.redirect('/my/cems/attendance')
+            sep = '&' if '?' in base else '?'
+            return request.redirect(f'{base}{sep}success={success}')
+        return request.redirect(base)
 
     @http.route(
         '/my/cems/attendance',
@@ -109,13 +115,14 @@ class CemsPortalAttendanceController(CemsPortalMixin, http.Controller):
     )
     def portal_check_in(self, **post):
         employee = self._cems_get_employee()
+        next_url = post.get('next') or '/my'
         if not employee:
-            return self._attendance_redirect(error='no_employee')
+            return self._attendance_redirect(error='no_employee', next_url=next_url)
         self._ensure_own_employee(employee)
 
         gps = self._parse_required_gps(post)
         if gps is None:
-            return self._attendance_redirect(error='invalid_gps')
+            return self._attendance_redirect(error='invalid_gps', next_url=next_url)
         latitude, longitude = gps
         selfie_b64, filename = self._read_selfie(post)
 
@@ -133,22 +140,22 @@ class CemsPortalAttendanceController(CemsPortalMixin, http.Controller):
                 employee.id,
                 err.args[0] if err.args else err,
             )
-            return self._attendance_redirect(error='outside_geofence')
+            return self._attendance_redirect(error='outside_geofence', next_url=next_url)
         except UserError as err:
             _logger.warning(
                 'CEMS portal check-in failed for employee=%s: %s',
                 employee.id,
                 err.args[0] if err.args else err,
             )
-            return self._attendance_redirect(error='check_in_failed')
+            return self._attendance_redirect(error='check_in_failed', next_url=next_url)
         except Exception:
             _logger.exception(
                 'CEMS portal check-in unexpected error for employee=%s',
                 employee.id,
             )
-            return self._attendance_redirect(error='check_in_failed')
+            return self._attendance_redirect(error='check_in_failed', next_url=next_url)
 
-        return self._attendance_redirect(success='checked_in')
+        return self._attendance_redirect(success='checked_in', next_url=next_url)
 
     @http.route(
         '/my/cems/attendance/check_out',
@@ -160,6 +167,9 @@ class CemsPortalAttendanceController(CemsPortalMixin, http.Controller):
     )
     def portal_check_out(self, **post):
         employee = self._cems_get_employee()
+        next_url = post.get('next') or '/my'
+        if not employee:
+            return self._attendance_redirect(error='checkout_failed', next_url=next_url)
         self._ensure_own_employee(employee)
 
         latitude = longitude = None
@@ -182,15 +192,15 @@ class CemsPortalAttendanceController(CemsPortalMixin, http.Controller):
                 employee.id,
                 err.args[0] if err.args else err,
             )
-            return self._attendance_redirect(error='checkout_failed')
+            return self._attendance_redirect(error='checkout_failed', next_url=next_url)
         except Exception:
             _logger.exception(
                 'CEMS portal check-out unexpected error for employee=%s',
                 employee.id,
             )
-            return self._attendance_redirect(error='checkout_failed')
+            return self._attendance_redirect(error='checkout_failed', next_url=next_url)
 
-        return self._attendance_redirect(success='checked_out')
+        return self._attendance_redirect(success='checked_out', next_url=next_url)
 
     @http.route(
         '/my/cems/attendance/json/check_in',

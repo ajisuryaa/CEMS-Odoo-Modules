@@ -77,6 +77,9 @@ class CemsPortalMixin:
             'checked_in': bool(open_attendance),
             'gate_pass_count': gate_count,
             'employee': employee,
+            'attendance_project': (
+                employee.cems_get_attendance_project() if employee else False
+            ),
         }
 
     def _cems_hub_lists(self, limit=5):

@@ -417,6 +417,9 @@ body:has(.cems-portal-shell) main {
   text-decoration: none !important;
   border: 2px solid transparent;
   line-height: 1.2;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
   transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
 }
 
@@ -429,7 +432,8 @@ body:has(.cems-portal-shell) main {
   stroke-linecap: round;
 }
 
-.cems-hub-attendance a.cems-hub-att-btn.primary {
+.cems-hub-attendance a.cems-hub-att-btn.primary,
+.cems-hub-attendance button.cems-hub-att-btn.primary {
   background-color: #16a34a !important;
   background-image: linear-gradient(180deg, #22c55e 0%, #16a34a 100%) !important;
   color: #ffffff !important;
@@ -437,14 +441,16 @@ body:has(.cems-portal-shell) main {
   box-shadow: 0 10px 24px rgba(22, 163, 74, 0.38);
 }
 
-.cems-hub-attendance a.cems-hub-att-btn.primary:hover {
+.cems-hub-attendance a.cems-hub-att-btn.primary:hover,
+.cems-hub-attendance button.cems-hub-att-btn.primary:hover:not(:disabled) {
   background-color: #15803d !important;
   background-image: linear-gradient(180deg, #16a34a 0%, #15803d 100%) !important;
   color: #ffffff !important;
   transform: translateY(-1px);
 }
 
-.cems-hub-attendance a.cems-hub-att-btn.dark {
+.cems-hub-attendance a.cems-hub-att-btn.dark,
+.cems-hub-attendance button.cems-hub-att-btn.dark {
   background-color: #0f1c1a !important;
   background-image: linear-gradient(180deg, #1e293b 0%, #0f1c1a 100%) !important;
   color: #ffffff !important;
@@ -452,7 +458,8 @@ body:has(.cems-portal-shell) main {
   box-shadow: 0 10px 24px rgba(15, 28, 26, 0.32);
 }
 
-.cems-hub-attendance a.cems-hub-att-btn.dark:hover {
+.cems-hub-attendance a.cems-hub-att-btn.dark:hover,
+.cems-hub-attendance button.cems-hub-att-btn.dark:hover:not(:disabled) {
   background-color: #1e293b !important;
   color: #ffffff !important;
   transform: translateY(-1px);
@@ -464,7 +471,8 @@ body:has(.cems-portal-shell) main {
   border-color: #cbd5e1;
 }
 
-.cems-hub-attendance .cems-hub-att-btn.disabled {
+.cems-hub-attendance .cems-hub-att-btn.disabled,
+.cems-hub-attendance .cems-hub-att-btn:disabled {
   opacity: 0.55;
   cursor: not-allowed;
   pointer-events: none;
@@ -491,6 +499,229 @@ body:has(.cems-portal-shell) main {
   .cems-hub-attendance .cems-hub-att-btn {
     flex: 1 1 auto;
   }
+}
+
+/* Attendance camera dialog */
+body.cems-att-dialog-open {
+  overflow: hidden;
+}
+
+.cems-att-dialog[hidden] {
+  display: none !important;
+}
+
+.cems-att-dialog {
+  position: fixed;
+  inset: 0;
+  z-index: 1055;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.cems-att-dialog-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 28, 26, 0.55);
+  backdrop-filter: blur(2px);
+}
+
+.cems-att-dialog-card {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 26rem);
+  background: #fff;
+  border-radius: 1rem;
+  padding: 1.1rem 1.15rem 1.25rem;
+  box-shadow: 0 24px 48px rgba(15, 28, 26, 0.28);
+}
+
+.cems-att-dialog-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.85rem;
+}
+
+.cems-att-dialog-head h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--cems-ink);
+}
+
+.cems-att-dialog-close {
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.55rem;
+  background: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #64748b;
+}
+
+.cems-att-dialog-close svg {
+  width: 1.1rem;
+  height: 1.1rem;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.cems-att-camera-stage {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.85rem;
+  background: #0f172a;
+  aspect-ratio: 3 / 4;
+  max-height: min(58vh, 420px);
+}
+
+.cems-att-video,
+.cems-att-snapshot {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.cems-att-video {
+  transform: scaleX(-1);
+}
+
+.cems-att-face-guide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      ellipse 42% 36% at 50% 42%,
+      transparent 0 68%,
+      rgba(15, 23, 42, 0.45) 72%
+    );
+}
+
+.cems-att-face-oval {
+  width: min(58%, 11.5rem);
+  aspect-ratio: 3 / 4;
+  border: 2.5px solid rgba(255, 255, 255, 0.92);
+  border-radius: 50%;
+  box-shadow: 0 0 0 999px rgba(15, 23, 42, 0.35);
+}
+
+.cems-att-face-hint {
+  margin: 0.85rem 0 0;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
+}
+
+.cems-att-gps-status {
+  margin: 0.75rem 0 0;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #64748b;
+}
+
+.cems-att-gps-status.is-ok { color: #166534; }
+.cems-att-gps-status.is-err { color: #b91c1c; }
+.cems-att-gps-status.is-wait { color: #a16207; }
+
+.cems-att-dialog-error {
+  margin: 0.35rem 0 0;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #b91c1c;
+}
+
+.cems-att-dialog-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+  margin-top: 1rem;
+}
+
+.cems-att-shutter {
+  width: 3.75rem;
+  height: 3.75rem;
+  border-radius: 999px;
+  border: 3px solid #0d9488;
+  background: #fff;
+  color: #0d9488;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(13, 148, 136, 0.25);
+  padding: 0;
+}
+
+.cems-att-shutter:hover {
+  background: #f0fdfa;
+}
+
+.cems-att-shutter svg {
+  width: 1.55rem;
+  height: 1.55rem;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.cems-att-shutter .cems-att-icon-capture circle:last-child {
+  fill: currentColor;
+  stroke: none;
+}
+
+.cems-att-dialog-actions .cems-hub-att-btn {
+  width: 100%;
+  min-width: 0;
+}
+
+.cems-att-dialog-actions button.cems-hub-att-btn.primary {
+  background-color: #16a34a !important;
+  background-image: linear-gradient(180deg, #22c55e 0%, #16a34a 100%) !important;
+  color: #ffffff !important;
+  border: 2px solid #15803d;
+  box-shadow: 0 10px 24px rgba(22, 163, 74, 0.38);
+  border-radius: 0.65rem;
+  padding: 0.9rem 1.25rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.cems-att-dialog-actions button.cems-hub-att-btn.dark {
+  background-color: #0f1c1a !important;
+  background-image: linear-gradient(180deg, #1e293b 0%, #0f1c1a 100%) !important;
+  color: #ffffff !important;
+  border: 2px solid #0f172a;
+  box-shadow: 0 10px 24px rgba(15, 28, 26, 0.32);
+  border-radius: 0.65rem;
+  padding: 0.9rem 1.25rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.cems-att-dialog-actions button.cems-hub-att-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
 }
 
 .cems-hub-list {
