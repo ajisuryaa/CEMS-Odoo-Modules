@@ -18,11 +18,21 @@
             <t t-set="page_title" t-value="page_title or _cems_shell.get('page_title')"/>
             <div id="wrap">
                 <div class="cems-portal-shell" id="o_cems_portal_shell">
-                    <aside class="cems-hub-sidebar" aria-label="CEMS navigation">
-                        <a href="/my" class="cems-hub-brand">
-                            <span class="cems-hub-brand-mark" aria-hidden="true"/>
-                            CEMS <span>Portal</span>
-                        </a>
+                    <aside class="cems-hub-sidebar" id="o_cems_hub_sidebar" aria-label="CEMS navigation">
+                        <div class="cems-hub-sidebar-top">
+                            <a href="/my" class="cems-hub-brand">
+                                <span class="cems-hub-brand-mark" aria-hidden="true"/>
+                                CEMS <span>Portal</span>
+                            </a>
+                            <button type="button"
+                                    class="cems-hub-sidebar-close"
+                                    id="o_cems_hub_sidebar_close"
+                                    aria-label="Close menu">
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M6 6l12 12M18 6L6 18"/>
+                                </svg>
+                            </button>
+                        </div>
                         <ul class="cems-hub-nav">
                             <t t-set="cems_active" t-value="cems_active_menu or 'home'"/>
                             <t t-foreach="cems_menu or []" t-as="item">
@@ -65,24 +75,35 @@
                             <a href="/web/session/logout?redirect=/">Logout</a>
                         </div>
                     </aside>
+                    <div class="cems-hub-nav-backdrop" id="o_cems_hub_nav_backdrop" hidden="hidden" aria-hidden="true"/>
 
                     <div class="cems-hub-main">
                         <header class="cems-hub-topbar">
-                            <div class="d-flex align-items-center gap-2">
+                            <div class="cems-hub-topbar-left">
                                 <button type="button"
                                         class="cems-hub-menu-toggle"
                                         id="o_cems_hub_menu_toggle"
-                                        aria-label="Open menu">
-                                    Menu
+                                        aria-label="Open menu"
+                                        aria-controls="o_cems_hub_sidebar"
+                                        aria-expanded="false">
+                                    <span class="cems-hub-burger" aria-hidden="true">
+                                        <span/>
+                                        <span/>
+                                        <span/>
+                                    </span>
                                 </button>
-                                <h1 t-esc="page_title or 'Dashboard'"/>
+                                <a href="/my" class="cems-hub-topbar-brand d-lg-none">
+                                    CEMS <span>Portal</span>
+                                </a>
+                                <h1 class="d-none d-lg-block" t-esc="page_title or 'Dashboard'"/>
                             </div>
                             <div class="cems-hub-topbar-actions">
-                                <span class="cems-hub-user" t-esc="cems_user_name"/>
+                                <h1 class="cems-hub-topbar-title-mobile d-lg-none" t-esc="page_title or 'Dashboard'"/>
+                                <span class="cems-hub-user d-none d-sm-inline" t-esc="cems_user_name"/>
                                 <a t-if="cems_is_internal" href="/web" class="btn btn-sm btn-outline-secondary d-none d-md-inline-flex">
                                     Back Office
                                 </a>
-                                <a href="/web/session/logout?redirect=/" class="btn btn-sm btn-outline-secondary">
+                                <a href="/web/session/logout?redirect=/" class="btn btn-sm btn-outline-secondary d-none d-sm-inline-flex">
                                     Logout
                                 </a>
                             </div>
@@ -96,11 +117,60 @@
                     (function () {
                         var shell = document.getElementById('o_cems_portal_shell');
                         var btn = document.getElementById('o_cems_hub_menu_toggle');
-                        if (shell &amp;&amp; btn) {
-                            btn.addEventListener('click', function () {
-                                shell.classList.toggle('sidebar-open');
+                        var closeBtn = document.getElementById('o_cems_hub_sidebar_close');
+                        var backdrop = document.getElementById('o_cems_hub_nav_backdrop');
+                        var sidebar = document.getElementById('o_cems_hub_sidebar');
+                        if (!shell || !btn) {
+                            return;
+                        }
+
+                        function setOpen(open) {
+                            shell.classList.toggle('sidebar-open', open);
+                            btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+                            btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+                            if (backdrop) {
+                                backdrop.hidden = !open;
+                                backdrop.setAttribute('aria-hidden', open ? 'false' : 'true');
+                            }
+                            document.body.classList.toggle('cems-hub-nav-open', open);
+                        }
+
+                        function toggle() {
+                            setOpen(!shell.classList.contains('sidebar-open'));
+                        }
+
+                        function close() {
+                            setOpen(false);
+                        }
+
+                        btn.addEventListener('click', function (ev) {
+                            ev.preventDefault();
+                            toggle();
+                        });
+                        if (closeBtn) {
+                            closeBtn.addEventListener('click', function (ev) {
+                                ev.preventDefault();
+                                close();
                             });
                         }
+                        if (backdrop) {
+                            backdrop.addEventListener('click', close);
+                        }
+                        if (sidebar) {
+                            sidebar.querySelectorAll('a').forEach(function (link) {
+                                link.addEventListener('click', close);
+                            });
+                        }
+                        document.addEventListener('keydown', function (ev) {
+                            if (ev.key === 'Escape') {
+                                close();
+                            }
+                        });
+                        window.addEventListener('resize', function () {
+                            if (window.innerWidth &gt;= 992) {
+                                close();
+                            }
+                        });
                     })();
                 </script>
             </div>
