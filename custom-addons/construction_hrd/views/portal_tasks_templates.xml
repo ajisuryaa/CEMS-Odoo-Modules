@@ -35,7 +35,7 @@
                                     </t>
                                 </button>
                                 <div class="cems-task-project-meta">
-                                    <a t-if="(groupby == 'project_id' or not groupby) and tasks[0].sudo().project_id"
+                                    <a t-if="cems_is_internal and (groupby == 'project_id' or not groupby) and tasks[0].sudo().project_id"
                                        class="cems-hub-link cems-task-project-open"
                                        t-att-href="'/my/projects/%s' % tasks[0].sudo().project_id.id">
                                         Open

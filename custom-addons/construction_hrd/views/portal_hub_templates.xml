@@ -412,7 +412,7 @@
                         <ul class="cems-hub-list" t-if="hub_projects">
                             <t t-foreach="hub_projects" t-as="project">
                                 <li>
-                                    <a t-att-href="'/my/projects/%s' % project.id"
+                                    <a t-att-href="'/my/projects' if cems_is_portal else ('/my/projects/%s' % project.id)"
                                        t-esc="project.display_name"/>
                                 </li>
                             </t>

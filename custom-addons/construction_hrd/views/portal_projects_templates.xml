@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- My Projects list — CEMS cards + detail dialog -->
+    <template id="cems_portal_my_projects" inherit_id="project.portal_my_projects">
+        <xpath expr="//t[@t-call='portal.portal_searchbar']" position="before">
+            <t t-set="classes" t-value="'cems-portal-toolbar'"/>
+        </xpath>
+        <xpath expr="//div[hasclass('alert-warning')]" position="attributes">
+            <attribute name="class">alert alert-light border cems-hub-muted mb-0</attribute>
+        </xpath>
+        <xpath expr="//t[@t-if='projects']" position="replace">
+            <t t-if="projects">
+                <div class="cems-hub-panel cems-project-list" id="o_cems_project_list">
+                    <t t-foreach="projects" t-as="project">
+                        <t t-set="mgr" t-value="project.sudo().user_id"/>
+                        <t t-set="members" t-value="project.sudo().cems_member_ids"/>
+                        <t t-set="engineers" t-value="project.sudo().cems_engineer_ids"/>
+                        <button type="button"
+                                class="cems-project-row"
+                                t-att-data-id="project.id"
+                                t-att-data-name="project.display_name"
+                                t-att-data-manager="mgr.name if mgr else ''"
+                                t-att-data-customer="project.sudo().partner_id.display_name if project.sudo().partner_id else ''"
+                                t-att-data-tasks="project.task_count"
+                                t-att-data-lat="project.geofence_latitude or ''"
+                                t-att-data-lon="project.geofence_longitude or ''"
+                                t-att-data-radius="project.geofence_radius or ''"
+                                t-att-data-progress="'%.1f' % (project.physical_progress_total or 0)"
+                                t-att-data-members="', '.join(members.mapped('name')) if members else ''"
+                                t-att-data-engineers="', '.join(engineers.mapped('name')) if engineers else ''"
+                                t-att-data-can-open-tasks="'1' if cems_is_internal else '0'">
+                            <span class="cems-project-row-mark" aria-hidden="true"/>
+                            <span class="cems-project-row-body">
+                                <span class="cems-project-row-name" t-esc="project.display_name"/>
+                                <span class="cems-project-row-meta">
+                                    <t t-if="mgr">
+                                        Manager: <t t-esc="mgr.name"/>
+                                    </t>
+                                    <t t-else="">No site manager</t>
+                                    <t t-if="project.geofence_latitude or project.geofence_longitude">
+                                        · Site geofence set
+                                    </t>
+                                </span>
+                            </span>
+                            <span class="cems-hub-badge">
+                                <t t-esc="project.task_count"/>
+                                <t t-esc="project.label_tasks or 'tasks'"/>
+                            </span>
+                        </button>
+                    </t>
+                </div>
+
+                <!-- Project detail dialog -->
+                <div class="cems-project-dialog" id="o_cems_project_dialog" hidden="hidden" aria-hidden="true">
+                    <div class="cems-project-dialog-backdrop" id="o_cems_project_dialog_backdrop"/>
+                    <div class="cems-project-dialog-card" role="dialog" aria-modal="true" aria-labelledby="o_cems_project_dialog_title">
+                        <div class="cems-project-dialog-head">
+                            <h3 id="o_cems_project_dialog_title">Project</h3>
+                            <button type="button" class="cems-project-dialog-close" id="o_cems_project_dialog_close" aria-label="Close">
+                                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+                            </button>
+                        </div>
+                        <div class="cems-project-dialog-body">
+                            <dl class="cems-project-facts">
+                                <div class="cems-project-fact">
+                                    <dt>Site Manager</dt>
+                                    <dd id="o_cems_proj_manager">—</dd>
+                                </div>
+                                <div class="cems-project-fact">
+                                    <dt>Customer</dt>
+                                    <dd id="o_cems_proj_customer">—</dd>
+                                </div>
+                                <div class="cems-project-fact">
+                                    <dt>Open Tasks</dt>
+                                    <dd id="o_cems_proj_tasks">—</dd>
+                                </div>
+                                <div class="cems-project-fact">
+                                    <dt>Physical Progress</dt>
+                                    <dd id="o_cems_proj_progress">—</dd>
+                                </div>
+                                <div class="cems-project-fact cems-project-fact-wide">
+                                    <dt>Site Location (geofence)</dt>
+                                    <dd id="o_cems_proj_location">—</dd>
+                                </div>
+                                <div class="cems-project-fact cems-project-fact-wide">
+                                    <dt>Site Team</dt>
+                                    <dd id="o_cems_proj_members">—</dd>
+                                </div>
+                                <div class="cems-project-fact cems-project-fact-wide">
+                                    <dt>Site Engineers</dt>
+                                    <dd id="o_cems_proj_engineers">—</dd>
+                                </div>
+                            </dl>
+                        </div>
+                        <div class="cems-project-dialog-foot">
+                            <button type="button" class="cems-hub-att-btn ghost" id="o_cems_project_dialog_dismiss">Close</button>
+                            <a href="#" class="cems-hub-att-btn primary d-none" id="o_cems_project_dialog_tasks">View tasks</a>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </xpath>
+    </template>
+</odoo>

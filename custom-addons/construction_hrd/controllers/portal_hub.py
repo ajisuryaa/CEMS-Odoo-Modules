@@ -107,6 +107,69 @@ class CemsProjectPortal(CemsPortalMixin, ProjectCustomerPortal):
         values = super()._prepare_portal_layout_values()
         return self._cems_inject_shell_values(values)
 
+    @route(['/my/projects', '/my/projects/page/<int:page>'], type='http', auth='user', website=True)
+    def portal_my_projects(self, page=1, date_begin=None, date_end=None, sortby=None, **kw):
+        response = super().portal_my_projects(
+            page=page,
+            date_begin=date_begin,
+            date_end=date_end,
+            sortby=sortby,
+            **kw,
+        )
+        return response
+
+    @route(
+        ['/my/projects/<int:project_id>', '/my/projects/<int:project_id>/page/<int:page>'],
+        type='http',
+        auth='public',
+        website=True,
+    )
+    def portal_my_project(
+        self,
+        project_id=None,
+        access_token=None,
+        page=1,
+        date_begin=None,
+        date_end=None,
+        sortby=None,
+        search=None,
+        search_in='content',
+        groupby=None,
+        task_id=None,
+        **kw,
+    ):
+        # Portal / external users: no access to project task cards — info via dialog only.
+        if request.env.user._is_portal():
+            return request.redirect('/my/projects')
+        return super().portal_my_project(
+            project_id=project_id,
+            access_token=access_token,
+            page=page,
+            date_begin=date_begin,
+            date_end=date_end,
+            sortby=sortby,
+            search=search,
+            search_in=search_in,
+            groupby=groupby,
+            task_id=task_id,
+            **kw,
+        )
+
+    @route(
+        [
+            '/my/projects/<int:project_id>/project_sharing',
+            '/my/projects/<int:project_id>/project_sharing/<path:subpath>',
+        ],
+        type='http',
+        auth='user',
+        methods=['GET'],
+    )
+    def render_project_backend_view(self, project_id, subpath=None):
+        # Portal / external users: no project-sharing task cards.
+        if request.env.user._is_portal():
+            return request.redirect('/my/projects')
+        return super().render_project_backend_view(project_id, subpath=subpath)
+
     @route(['/my/tasks', '/my/tasks/page/<int:page>'], type='http', auth='user', website=True)
     def portal_my_tasks(
         self,
