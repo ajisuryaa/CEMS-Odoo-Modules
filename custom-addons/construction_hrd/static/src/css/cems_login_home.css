@@ -43,6 +43,15 @@ body:has(.cems-login-page) #wrapwrap {
   font-size: 1.25rem;
 }
 
+.cems-logo-img {
+  width: 3rem;
+  height: 3rem;
+  object-fit: contain;
+  display: block;
+  flex-shrink: 0;
+}
+
+.cems-logo-text span,
 .cems-logo span {
   color: var(--cems-leaf);
 }

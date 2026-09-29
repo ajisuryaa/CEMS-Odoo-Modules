@@ -14,8 +14,10 @@
                         <div class="col-12 col-lg-6 cems-login-form-pane d-flex flex-column">
                             <div class="cems-login-form-inner mx-auto my-auto w-100">
                                 <a href="/" class="cems-logo d-inline-flex align-items-center gap-2 mb-4 text-decoration-none">
-                                    <span class="cems-logo-mark" aria-hidden="true"/>
-                                    CEMS <span>Portal</span>
+                                    <img src="/construction_hrd/static/src/img/dynatech_logo.png"
+                                         alt="Dynatech"
+                                         class="cems-logo-img"/>
+                                    <span class="cems-logo-text">CEMS <span>Portal</span></span>
                                 </a>
 
                                 <h1 class="cems-login-title">Log in to your account</h1>

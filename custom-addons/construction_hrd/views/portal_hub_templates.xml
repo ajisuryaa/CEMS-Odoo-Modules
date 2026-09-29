@@ -21,8 +21,10 @@
                     <aside class="cems-hub-sidebar" id="o_cems_hub_sidebar" aria-label="CEMS navigation">
                         <div class="cems-hub-sidebar-top">
                             <a href="/my" class="cems-hub-brand">
-                                <span class="cems-hub-brand-mark" aria-hidden="true"/>
-                                CEMS <span>Portal</span>
+                                <img src="/construction_hrd/static/src/img/dynatech_logo.png"
+                                     alt="Dynatech"
+                                     class="cems-hub-brand-logo"/>
+                                <span class="cems-hub-brand-text">CEMS <span>Portal</span></span>
                             </a>
                             <button type="button"
                                     class="cems-hub-sidebar-close"
@@ -93,7 +95,10 @@
                                     </span>
                                 </button>
                                 <a href="/my" class="cems-hub-topbar-brand d-lg-none">
-                                    CEMS <span>Portal</span>
+                                    <img src="/construction_hrd/static/src/img/dynatech_logo.png"
+                                         alt="Dynatech"
+                                         class="cems-hub-topbar-logo"/>
+                                    <span class="cems-hub-topbar-brand-text">CEMS <span>Portal</span></span>
                                 </a>
                                 <h1 class="d-none d-lg-block" t-esc="page_title or 'Dashboard'"/>
                             </div>
