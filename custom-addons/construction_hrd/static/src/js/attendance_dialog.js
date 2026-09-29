@@ -8,7 +8,7 @@
 
     function requestPosition(onOk, onErr) {
         if (!navigator.geolocation) {
-            onErr({ message: "Geolocation is not supported by this browser." });
+            onErr({ code: 0, message: "Geolocation is not supported by this browser." });
             return;
         }
         try {
@@ -19,6 +19,7 @@
                 host === "127.0.0.1";
             if (!secure) {
                 onErr({
+                    code: 0,
                     message:
                         "GPS blocked on insecure HTTP. Open via http://localhost:8069 or HTTPS.",
                 });
@@ -81,11 +82,39 @@
         var iconCapture = shutter && shutter.querySelector(".cems-att-icon-capture");
         var iconRetake = shutter && shutter.querySelector(".cems-att-icon-retake");
         var submitBtn = $("o_cems_att_submit");
+        var permissionEl = $("o_cems_att_permission");
+        var permissionLead = $("o_cems_att_permission_lead");
+        var permissionSteps = $("o_cems_att_permission_steps");
+        var permissionRetry = $("o_cems_att_permission_retry");
 
         var stream = null;
         var mode = openBtn.getAttribute("data-mode") || "check_in";
         var gpsReady = false;
         var selfieReady = false;
+        var cameraDenied = false;
+        var gpsDenied = false;
+        var cameraOk = false;
+
+        var STEPS = {
+            camera: [
+                "Tap the lock / info icon in the browser address bar.",
+                "Find <strong>Camera</strong> and set it to <strong>Allow</strong>.",
+                "Reload this page, then open Check In again.",
+                "Still blocked? Device Settings → Apps / Safari → Camera → Allow for this site.",
+            ],
+            location: [
+                "Tap the lock / info icon in the browser address bar.",
+                "Find <strong>Location</strong> and set it to <strong>Allow</strong>.",
+                "Reload this page, then open Check In again.",
+                "On phone: Settings → Privacy / Location → enable for your browser, then Allow for this site.",
+            ],
+            both: [
+                "Tap the lock / info icon in the browser address bar.",
+                "Set <strong>Camera</strong> and <strong>Location</strong> to <strong>Allow</strong>.",
+                "Reload this page, then open Check In again.",
+                "Still blocked? Device Settings → Apps / Safari → Site permissions → Allow Camera & Location.",
+            ],
+        };
 
         function showError(msg) {
             if (!errEl) {
@@ -128,6 +157,14 @@
             submitBtn.classList.toggle("d-none", !selfieReady);
         }
 
+        function setShutterVisible(visible) {
+            if (!shutter) {
+                return;
+            }
+            shutter.classList.toggle("d-none", !visible);
+            shutter.disabled = !visible;
+        }
+
         function setShutterMode(captured) {
             if (!shutter) {
                 return;
@@ -153,12 +190,85 @@
             }
         }
 
+        function renderPermissionSteps(kind) {
+            if (!permissionSteps) {
+                return;
+            }
+            var items = STEPS[kind] || STEPS.both;
+            permissionSteps.innerHTML = items
+                .map(function (html) {
+                    return "<li>" + html + "</li>";
+                })
+                .join("");
+        }
+
+        function refreshPermissionPanel() {
+            var showCamera = cameraDenied;
+            var showGps = gpsDenied && mode === "check_in";
+            var show = showCamera || showGps;
+
+            if (!permissionEl) {
+                return;
+            }
+
+            if (!show) {
+                permissionEl.classList.add("d-none");
+                if (cameraOk && !selfieReady) {
+                    setPreview("live");
+                }
+                setShutterVisible(cameraOk);
+                return;
+            }
+
+            var kind = "both";
+            var lead = "Camera or location access is blocked for this site.";
+            if (showCamera && !showGps) {
+                kind = "camera";
+                lead = "Camera access is blocked. Check-in needs a selfie.";
+            } else if (!showCamera && showGps) {
+                kind = "location";
+                lead = "Location access is blocked. Check-in needs GPS on site.";
+            } else {
+                kind = "both";
+                lead = "Camera and location access are blocked for this site.";
+            }
+
+            if (permissionLead) {
+                permissionLead.textContent = lead;
+            }
+            renderPermissionSteps(kind);
+            permissionEl.classList.remove("d-none");
+
+            // Hide live preview while permission help is shown
+            if (video) {
+                video.classList.add("d-none");
+            }
+            if (snapshot) {
+                snapshot.classList.add("d-none");
+            }
+            setShutterVisible(false);
+            if (submitBtn) {
+                submitBtn.classList.add("d-none");
+            }
+        }
+
+        function hidePermissionPanel() {
+            cameraDenied = false;
+            if (permissionEl) {
+                permissionEl.classList.add("d-none");
+            }
+        }
+
         function startCamera() {
             showError("");
             selfieReady = false;
+            cameraOk = false;
             setShutterMode(false);
             updateSubmitState();
             if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                cameraDenied = true;
+                cameraOk = false;
+                refreshPermissionPanel();
                 showError("Camera is not supported in this browser.");
                 return;
             }
@@ -174,20 +284,35 @@
                 })
                 .then(function (mediaStream) {
                     stream = mediaStream;
+                    cameraDenied = false;
+                    cameraOk = true;
                     video.srcObject = stream;
-                    setPreview("live");
                     if (fileInput) {
                         fileInput.value = "";
                     }
+                    refreshPermissionPanel();
+                    if (!permissionEl || permissionEl.classList.contains("d-none")) {
+                        setPreview("live");
+                        setShutterVisible(true);
+                    }
                 })
                 .catch(function (err) {
-                    var msg = "Unable to open camera. Allow camera permission.";
+                    cameraOk = false;
+                    stopStream();
                     if (err && err.name === "NotAllowedError") {
-                        msg = "Camera permission denied. Allow camera in site settings.";
-                    } else if (err && err.name === "NotFoundError") {
+                        cameraDenied = true;
+                        refreshPermissionPanel();
+                        showError("");
+                        return;
+                    }
+                    cameraDenied = false;
+                    refreshPermissionPanel();
+                    var msg = "Unable to open camera. Allow camera permission.";
+                    if (err && err.name === "NotFoundError") {
                         msg = "No camera found on this device.";
                     }
                     showError(msg);
+                    setShutterVisible(false);
                 });
         }
 
@@ -249,22 +374,38 @@
                         lonIn.value = String(lon);
                     }
                     gpsReady = true;
+                    gpsDenied = false;
                     setGpsText(
                         "GPS OK (" + lat.toFixed(5) + ", " + lon.toFixed(5) + ")",
                         "ok"
                     );
+                    refreshPermissionPanel();
                     updateSubmitState();
                 },
                 function (err) {
                     gpsReady = false;
+                    gpsDenied = !!(err && err.code === 1);
                     setGpsText(formatGeoError(err), "err");
+                    refreshPermissionPanel();
                     updateSubmitState();
                 }
             );
         }
 
+        function retryPermissions() {
+            showError("");
+            hidePermissionPanel();
+            gpsDenied = false;
+            cameraDenied = false;
+            startCamera();
+            requestGps();
+        }
+
         function openDialog() {
             mode = openBtn.getAttribute("data-mode") || "check_in";
+            cameraDenied = false;
+            gpsDenied = false;
+            cameraOk = false;
             if (titleEl) {
                 titleEl.textContent = mode === "check_out" ? "Check Out" : "Check In";
             }
@@ -279,6 +420,9 @@
                 submitBtn.classList.toggle("primary", mode !== "check_out");
                 submitBtn.classList.toggle("dark", mode === "check_out");
             }
+            if (permissionEl) {
+                permissionEl.classList.add("d-none");
+            }
             dialog.hidden = false;
             dialog.setAttribute("aria-hidden", "false");
             document.body.classList.add("cems-att-dialog-open");
@@ -290,13 +434,20 @@
             stopStream();
             selfieReady = false;
             gpsReady = false;
+            cameraDenied = false;
+            gpsDenied = false;
+            cameraOk = false;
             setShutterMode(false);
+            setShutterVisible(true);
             setPreview("live");
             if (snapshot) {
                 snapshot.src = "";
             }
             if (fileInput) {
                 fileInput.value = "";
+            }
+            if (permissionEl) {
+                permissionEl.classList.add("d-none");
             }
             showError("");
             dialog.hidden = true;
@@ -325,6 +476,13 @@
                 closeDialog();
             }
         });
+
+        if (permissionRetry) {
+            permissionRetry.addEventListener("click", function (ev) {
+                ev.preventDefault();
+                retryPermissions();
+            });
+        }
 
         if (shutter) {
             shutter.addEventListener("click", function (ev) {

@@ -342,7 +342,7 @@
                         <input type="hidden" name="longitude" id="o_cems_att_longitude" value=""/>
                         <input type="file" class="d-none" name="selfie" id="o_cems_att_selfie" accept="image/*"/>
 
-                        <div class="cems-att-camera-stage">
+                        <div class="cems-att-camera-stage" id="o_cems_att_camera_stage">
                             <video id="o_cems_att_video"
                                    class="cems-att-video"
                                    playsinline="playsinline"
@@ -350,9 +350,28 @@
                                    muted="muted"/>
                             <canvas id="o_cems_att_canvas" class="d-none"/>
                             <img id="o_cems_att_snapshot" class="cems-att-snapshot d-none" alt="Captured selfie"/>
+
+                            <div class="cems-att-permission d-none" id="o_cems_att_permission" role="alert">
+                                <p class="cems-att-permission-title">Permission not allowed</p>
+                                <p class="cems-att-permission-lead" id="o_cems_att_permission_lead">
+                                    Camera or location access is blocked for this site.
+                                </p>
+                                <p class="cems-att-permission-how">How to allow permission</p>
+                                <ol class="cems-att-permission-steps" id="o_cems_att_permission_steps">
+                                    <li>Tap the lock / info icon in the browser address bar.</li>
+                                    <li>Find <strong>Camera</strong> and/or <strong>Location</strong>.</li>
+                                    <li>Change them to <strong>Allow</strong>.</li>
+                                    <li>Reload this page, then open Check In again.</li>
+                                    <li>If still blocked: device Settings → Apps / Safari → Site permissions → Allow.</li>
+                                </ol>
+                                <button type="button"
+                                        class="cems-att-permission-retry"
+                                        id="o_cems_att_permission_retry">
+                                    Try again
+                                </button>
+                            </div>
                         </div>
 
-                        <p class="cems-att-gps-status" id="o_cems_att_gps_status">Requesting GPS…</p>
                         <p class="cems-att-dialog-error d-none" id="o_cems_att_dialog_error"/>
 
                         <div class="cems-att-dialog-actions">
