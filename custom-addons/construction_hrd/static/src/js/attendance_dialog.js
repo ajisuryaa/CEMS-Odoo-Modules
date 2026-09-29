@@ -72,7 +72,6 @@
         var video = $("o_cems_att_video");
         var canvas = $("o_cems_att_canvas");
         var snapshot = $("o_cems_att_snapshot");
-        var faceGuide = dialog.querySelector(".cems-att-face-guide");
         var fileInput = $("o_cems_att_selfie");
         var latIn = $("o_cems_att_latitude");
         var lonIn = $("o_cems_att_longitude");
@@ -151,9 +150,6 @@
             }
             if (snapshot) {
                 snapshot.classList.toggle("d-none", modeName !== "snap");
-            }
-            if (faceGuide) {
-                faceGuide.classList.toggle("d-none", modeName !== "live");
             }
         }
 
