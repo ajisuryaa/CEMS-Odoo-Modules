@@ -3,13 +3,18 @@ import logging
 
 import odoo
 import odoo.exceptions
+import werkzeug
 from odoo import http
+from odoo.addons.auth_signup.controllers.main import AuthSignupHome
+from odoo.addons.auth_signup.models.res_users import SignupError
+from odoo.addons.web.controllers.home import CREDENTIAL_PARAMS
+from odoo.addons.web.controllers.utils import ensure_db
+from odoo.addons.web.models.res_users import SKIP_CAPTCHA_LOGIN
+from odoo.addons.website.controllers.main import Website
+from odoo.exceptions import UserError
 from odoo.http import request
 from odoo.tools.translate import _
-
-from odoo.addons.web.controllers.home import CREDENTIAL_PARAMS, Home
-from odoo.addons.web.controllers.utils import ensure_db
-from odoo.addons.website.controllers.main import Website
+from werkzeug.urls import url_encode
 
 _logger = logging.getLogger(__name__)
 
@@ -56,11 +61,11 @@ class CemsWebsiteHome(Website):
         )
 
 
-class CemsWebsiteLogin(Home):
-    """Authenticate against the Odoo DB; stay on CEMS homepage on failure.
+class CemsWebsiteLogin(AuthSignupHome):
+    """CEMS login divert + disable public signup + themed reset password.
 
-    Also divert the stock ``/web/login`` page to the CEMS homepage so
-    session-expired redirects land on the branded portal login.
+    Inherits ``AuthSignupHome`` (which inherits ``Home``) so signup / reset
+    routes stay on one controller and do not shadow ``/web/login``.
     """
 
     def _cems_prepare_public_env(self):
@@ -147,3 +152,77 @@ class CemsWebsiteLogin(Home):
                     redirect=redirect,
                 ),
             )
+
+    # --- Point 9 ---
+    @http.route(
+        '/web/signup',
+        type='http',
+        auth='public',
+        website=True,
+        sitemap=False,
+    )
+    def web_auth_signup(self, *args, **kw):
+        return request.redirect('/')
+
+    # --- Point 10 ---
+    @http.route(
+        '/web/reset_password',
+        type='http',
+        auth='public',
+        website=True,
+        sitemap=False,
+        captcha='password_reset',
+    )
+    def web_auth_reset_password(self, *args, **kw):
+        qcontext = self.get_auth_signup_qcontext()
+
+        if not qcontext.get('token') and not qcontext.get('reset_password_enabled'):
+            raise werkzeug.exceptions.NotFound()
+
+        if 'error' not in qcontext and request.httprequest.method == 'POST':
+            try:
+                if qcontext.get('token'):
+                    self.do_signup(qcontext, do_login=False)
+                    request.update_context(skip_captcha_login=SKIP_CAPTCHA_LOGIN)
+                    qcontext['message'] = _("Your password has been reset successfully.")
+                else:
+                    login = qcontext.get('login')
+                    assert login, _("No login provided.")
+                    _logger.info(
+                        "CEMS password reset attempt for <%s> by user <%s> from %s",
+                        login,
+                        request.env.user.login,
+                        request.httprequest.remote_addr,
+                    )
+                    request.env['res.users'].sudo().reset_password(login)
+                    qcontext['message'] = _(
+                        "Password reset instructions sent to your email address."
+                    )
+            except UserError as e:
+                qcontext['error'] = e.args[0]
+            except SignupError:
+                qcontext['error'] = _("Could not reset your password")
+                _logger.exception('CEMS error when resetting password')
+            except Exception as e:
+                qcontext['error'] = str(e)
+
+        elif 'signup_email' in qcontext:
+            user = request.env['res.users'].sudo().search(
+                [('email', '=', qcontext.get('signup_email')), ('state', '!=', 'new')],
+                limit=1,
+            )
+            if user:
+                return request.redirect(
+                    '/web/login?%s' % url_encode({'login': user.login, 'redirect': '/my'})
+                )
+
+        response = request.render('construction_hrd.cems_reset_password', qcontext)
+        response.headers['X-Frame-Options'] = 'SAMEORIGIN'
+        response.headers['Content-Security-Policy'] = "frame-ancestors 'self'"
+        return response
+
+    def get_auth_signup_config(self):
+        config = super().get_auth_signup_config()
+        # Workers are provisioned via Access Type — never enable public signup UI.
+        config['signup_enabled'] = False
+        return config

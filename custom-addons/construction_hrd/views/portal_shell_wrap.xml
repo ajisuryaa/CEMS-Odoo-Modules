@@ -51,4 +51,23 @@
             <attribute name="t-call">construction_hrd.cems_portal_layout</attribute>
         </xpath>
     </template>
+
+    <!-- Point 6: Connection &amp; Security -->
+    <template id="cems_wrap_portal_my_security" inherit_id="portal.portal_my_security">
+        <xpath expr="//t[@t-call='portal.portal_layout']" position="before">
+            <t t-set="page_title">Connection &amp; Security</t>
+        </xpath>
+        <xpath expr="//t[@t-call='portal.portal_layout']" position="attributes">
+            <attribute name="t-call">construction_hrd.cems_portal_layout</attribute>
+        </xpath>
+    </template>
+
+    <!-- Point 7: profile extras — link to security inside CEMS shell -->
+    <template id="cems_portal_my_details_security_link" inherit_id="portal.portal_my_details">
+        <xpath expr="//div[hasclass('o_customer_address_fill')]" position="before">
+            <div class="cems-profile-security-link mb-3">
+                <a href="/my/security" class="btn btn-sm btn-outline-secondary">Connection &amp; Security</a>
+            </div>
+        </xpath>
+    </template>
 </odoo>

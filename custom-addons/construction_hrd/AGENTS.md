@@ -20,6 +20,9 @@ Juga: [AGENTS.md pusat](../../document_project/pt_dynatech_batam/AGENTS.md) ·
 - Website `/` → CEMS login (`controllers/website_home.py`); auth POST `/cems/login`
 - Portal Hub `/my` → role-based sidebar shell (`controllers/portal_hub.py`) — see
   [10_plan_portal_my_hub.md](../../document_project/pt_dynatech_batam/10_plan_portal_my_hub.md)
+- Route hardening: block project-scoped task paths & sharing upload for portal;
+  `/my/addresses` → profile; `/my/security` in shell; attendance GET → `/my`;
+  `/web/signup` off; CEMS `/web/reset_password`; task detail `auth=user`
 
 ## Access Type (employee)
 

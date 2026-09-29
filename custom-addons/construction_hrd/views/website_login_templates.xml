@@ -115,4 +115,109 @@
             </div>
         </t>
     </template>
+
+    <!-- Point 10: CEMS-themed reset password (same split layout as login) -->
+    <template id="cems_reset_password" name="CEMS Reset Password">
+        <t t-call="website.layout">
+            <t t-set="no_header" t-value="True"/>
+            <t t-set="no_footer" t-value="True"/>
+
+            <div id="wrap" class="cems-login-page">
+                <div class="container-fluid g-0 min-vh-100">
+                    <div class="row g-0 min-vh-100">
+                        <div class="col-12 col-lg-6 cems-login-form-pane d-flex flex-column">
+                            <div class="cems-login-form-inner mx-auto my-auto w-100">
+                                <a href="/" class="cems-logo d-inline-flex align-items-center gap-2 mb-4 text-decoration-none">
+                                    <img src="/construction_hrd/static/src/img/dynatech_logo.png"
+                                         alt="Dynatech"
+                                         class="cems-logo-img"/>
+                                    <span class="cems-logo-text">CEMS <span>Portal</span></span>
+                                </a>
+
+                                <h1 class="cems-login-title">Reset password</h1>
+                                <p class="cems-login-subtitle mb-4">
+                                    <t t-if="token">Choose a new password for your account.</t>
+                                    <t t-else="">Enter your email and we will send reset instructions.</t>
+                                </p>
+
+                                <div t-if="message" class="alert alert-success" role="status">
+                                    <t t-esc="message"/>
+                                </div>
+                                <div t-if="error" class="alert alert-danger" role="alert">
+                                    <t t-esc="error"/>
+                                </div>
+
+                                <div t-if="message" class="d-grid gap-2">
+                                    <a href="/" class="btn cems-btn-touch cems-btn-primary w-100">Back to login</a>
+                                </div>
+
+                                <form t-if="not message"
+                                      class="oe_reset_password_form"
+                                      role="form"
+                                      method="post"
+                                      action="/web/reset_password"
+                                      data-captcha="password_reset">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <input type="hidden" name="redirect" t-att-value="redirect or '/my'"/>
+                                    <input type="hidden" name="token" t-att-value="token"/>
+
+                                    <t t-if="token and not invalid_token">
+                                        <t t-call="auth_signup.fields">
+                                            <t t-set="autofocus" t-value="1"/>
+                                        </t>
+                                    </t>
+
+                                    <t t-if="not token">
+                                        <div class="mb-3">
+                                            <label for="login" class="form-label fw-semibold">Email</label>
+                                            <div class="input-group input-group-lg cems-input-group">
+                                                <span class="input-group-text bg-white">
+                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                                        <path d="M4 6h16v12H4V6zm0 0l8 7 8-7" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                    </svg>
+                                                </span>
+                                                <input type="text"
+                                                       class="form-control"
+                                                       id="login"
+                                                       name="login"
+                                                       t-att-value="login or ''"
+                                                       placeholder="Enter your email"
+                                                       required="required"
+                                                       autofocus="autofocus"
+                                                       autocapitalize="off"
+                                                       autocomplete="username"/>
+                                            </div>
+                                        </div>
+                                    </t>
+
+                                    <button type="submit" class="btn cems-btn-touch cems-btn-primary w-100">
+                                        Reset Password
+                                    </button>
+                                    <div class="text-center mt-3">
+                                        <a href="/" class="cems-link-leaf fw-semibold text-decoration-none">Back to login</a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-lg-6 cems-login-hero-col d-none d-lg-flex align-items-stretch">
+                            <div class="cems-login-hero-pane flex-column position-relative overflow-hidden w-100 d-flex">
+                                <div class="cems-login-hero-overlay"/>
+                                <div class="cems-login-hero-content position-relative z-1 p-4 p-xl-5 flex-grow-1 d-flex flex-column justify-content-center">
+                                    <p class="cems-hero-brand mb-2">PT DYNATECH BATAM</p>
+                                    <h2 class="cems-hero-headline">
+                                        Secure access<br/>
+                                        for every site.
+                                    </h2>
+                                    <p class="cems-hero-lead mb-0">
+                                        Reset your password, then return to the CEMS portal login.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
 </odoo>

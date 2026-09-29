@@ -40,10 +40,14 @@ class CemsPortalAttendanceController(CemsPortalMixin, http.Controller):
         return base64.b64encode(raw), filename
 
     def _attendance_redirect(self, *, error=None, success=None, next_url=None):
-        base = '/my/cems/attendance'
+        base = '/my'
         candidate = next_url and str(next_url)
         if candidate and candidate.startswith('/') and '//' not in candidate:
-            base = candidate
+            # Never bounce POST results back to the retired full-page GET route
+            if candidate.rstrip('/') == '/my/cems/attendance':
+                base = '/my'
+            else:
+                base = candidate
         if error:
             sep = '&' if '?' in base else '?'
             return request.redirect(f'{base}{sep}error={error}')
@@ -59,25 +63,15 @@ class CemsPortalAttendanceController(CemsPortalMixin, http.Controller):
         website=True,
     )
     def portal_attendance_page(self, **kwargs):
-        employee = self._cems_get_employee()
-        open_att = request.env['hr.attendance']
-        if employee:
-            open_att = request.env['hr.attendance'].sudo().search([
-                ('employee_id', '=', employee.id),
-                ('check_out', '=', False),
-            ], limit=1)
-        values = self._cems_prepare_shell_values(
-            page_name='cems_attendance',
-            page_title=_('Site Attendance'),
-        )
-        values.update({
-            'employee': employee,
-            'project': employee.cems_get_attendance_project() if employee else False,
-            'open_attendance': open_att,
-            'error': kwargs.get('error'),
-            'success': kwargs.get('success'),
-        })
-        return request.render('construction_hrd.portal_attendance_page', values)
+        # Point 8: primary UX is hub dialog on `/my`; keep history + POST endpoints.
+        query = {}
+        if kwargs.get('error'):
+            query['error'] = kwargs['error']
+        if kwargs.get('success'):
+            query['success'] = kwargs['success']
+        if query:
+            return request.redirect_query('/my', query=query, code=303)
+        return request.redirect('/my')
 
     @http.route(
         '/my/cems/attendance/history',
