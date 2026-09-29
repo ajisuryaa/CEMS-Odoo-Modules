@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- My Tasks list: project → child tasks (CEMS tree) -->
+    <template id="cems_portal_tasks_list" inherit_id="project.portal_tasks_list">
+        <xpath expr="//t[@t-if='grouped_tasks']" position="replace">
+            <t t-if="grouped_tasks">
+                <div class="cems-hub-panel cems-task-tree" id="o_cems_task_tree">
+                    <t t-foreach="grouped_tasks" t-as="tasks">
+                        <section t-if="tasks" class="cems-task-group is-collapsed">
+                            <header class="cems-task-project">
+                                <button type="button"
+                                        class="cems-task-project-toggle"
+                                        aria-expanded="false">
+                                    <span class="cems-task-chevron" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+                                    </span>
+                                    <span class="cems-task-project-mark" aria-hidden="true"/>
+                                    <t t-if="groupby == 'project_id' or not groupby">
+                                        <span t-if="tasks[0].sudo().project_id"
+                                              class="cems-task-project-name"
+                                              t-esc="tasks[0].sudo().project_id.display_name"/>
+                                        <span t-else="" class="cems-task-project-name">No Project</span>
+                                    </t>
+                                    <t t-else="">
+                                        <span class="cems-task-project-name">
+                                            <t t-if="groupby == 'stage_id'" t-esc="tasks[0].sudo().stage_id.display_name"/>
+                                            <t t-elif="groupby == 'state'" t-esc="tasks[0].sudo().state"/>
+                                            <t t-elif="groupby == 'priority'" t-esc="tasks[0].sudo().priority"/>
+                                            <t t-elif="groupby == 'milestone_id'">
+                                                <t t-if="tasks[0].sudo().milestone_id" t-esc="tasks[0].sudo().milestone_id.display_name"/>
+                                                <t t-else="">No Milestone</t>
+                                            </t>
+                                            <t t-else="" t-esc="tasks[0].sudo().project_id.display_name or 'Tasks'"/>
+                                        </span>
+                                    </t>
+                                </button>
+                                <div class="cems-task-project-meta">
+                                    <a t-if="(groupby == 'project_id' or not groupby) and tasks[0].sudo().project_id"
+                                       class="cems-hub-link cems-task-project-open"
+                                       t-att-href="'/my/projects/%s' % tasks[0].sudo().project_id.id">
+                                        Open
+                                    </a>
+                                    <span class="cems-hub-badge"><t t-esc="len(tasks)"/> tasks</span>
+                                </div>
+                            </header>
+                            <ul class="cems-task-children">
+                                <t t-foreach="tasks" t-as="task">
+                                    <li class="cems-task-child">
+                                        <span class="cems-task-branch" aria-hidden="true"/>
+                                        <a class="cems-task-name"
+                                           t-attf-href="/my/#{task_url}/#{task.id}?{{ keep_query() }}"
+                                           t-att-title="task.name"
+                                           t-esc="task.name"/>
+                                        <span class="cems-task-assignee">
+                                            <t t-set="assignees" t-value="task.sudo().user_ids"/>
+                                            <t t-if="assignees">
+                                                <t t-esc="assignees[:1].name"/>
+                                                <t t-if="len(assignees) &gt; 1"> +<t t-esc="len(assignees) - 1"/></t>
+                                            </t>
+                                            <t t-else="">—</t>
+                                        </span>
+                                        <span class="cems-task-stage">
+                                            <span t-if="task.stage_id"
+                                                  t-att-class="'cems-hub-badge' + (' ok' if task.state == '1_done' else (' warn' if task.state in ('02_changes_requested', '04_waiting_normal') else ''))"
+                                                  t-esc="task.stage_id.name"/>
+                                            <span t-else="" class="cems-hub-badge" t-esc="task.state"/>
+                                        </span>
+                                    </li>
+                                </t>
+                            </ul>
+                        </section>
+                    </t>
+                </div>
+            </t>
+        </xpath>
+    </template>
+
+    <!-- Soften empty state + CEMS toolbar class on tasks page -->
+    <template id="cems_portal_my_tasks_chrome" inherit_id="project.portal_my_tasks">
+        <xpath expr="//t[@t-call='portal.portal_searchbar']" position="before">
+            <t t-set="classes" t-value="'cems-portal-toolbar'"/>
+        </xpath>
+        <xpath expr="//div[hasclass('alert-warning')]" position="attributes">
+            <attribute name="class">alert alert-light border cems-hub-muted mb-0</attribute>
+        </xpath>
+    </template>
+
+    <!-- Task detail: CEMS shell chrome -->
+    <template id="cems_portal_my_task_chrome" inherit_id="project.portal_my_task">
+        <xpath expr="//div[hasclass('o_project_portal_sidebar')]" position="attributes">
+            <attribute name="class" add="cems-task-detail" separator=" "/>
+        </xpath>
+        <xpath expr="//div[@id='card']" position="attributes">
+            <attribute name="class" add="cems-hub-panel cems-task-detail-card" separator=" "/>
+        </xpath>
+        <xpath expr="//div[@id='task_chat']" position="attributes">
+            <attribute name="class" add="cems-hub-panel cems-task-detail-chat mt-3" separator=" "/>
+        </xpath>
+    </template>
+</odoo>
