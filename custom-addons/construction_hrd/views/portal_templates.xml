@@ -175,54 +175,193 @@
         </t>
     </template>
 
-    <!-- Attendance history (from hub panel) -->
-    <template id="portal_attendance_history" name="CEMS Attendance History">
+    <!-- Attendance history — Site Attendance menu page -->
+    <template id="portal_attendance_history" name="CEMS Site Attendance History">
         <t t-call="construction_hrd.cems_portal_layout">
-            <div class="cems-hub-panel">
-                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
-                    <h2 class="mb-0">Attendance History</h2>
-                    <a href="/my" class="cems-hub-link">Back to dashboard</a>
+            <div class="cems-att-history" id="o_cems_att_history">
+
+                <div t-if="error" class="alert alert-danger" role="alert">
+                    <t t-if="error == 'outside_geofence'">
+                        You are outside the site geofence. Move closer to the project site and try again.
+                    </t>
+                    <t t-elif="error == 'no_employee'">
+                        No employee record is linked to your user. Contact HR / your supervisor.
+                    </t>
+                    <t t-elif="error == 'invalid_gps'">
+                        Invalid GPS coordinates. Allow location access and try again.
+                    </t>
+                    <t t-elif="error == 'check_in_failed'">
+                        Check-in failed. You may already have an open attendance.
+                    </t>
+                    <t t-elif="error == 'checkout_failed'">
+                        Check-out failed. No open check-in was found.
+                    </t>
+                    <t t-else="">An error occurred. Please try again.</t>
                 </div>
-                <div t-if="not employee" class="alert alert-warning mb-0">
-                    No employee record is linked to your user.
+                <div t-if="success" class="alert alert-success" role="alert">
+                    <t t-if="success == 'checked_in'">Checked in successfully.</t>
+                    <t t-elif="success == 'checked_out'">Checked out successfully.</t>
                 </div>
-                <div t-elif="not attendance_history" class="alert alert-light border mb-0">
-                    No attendance records yet.
-                </div>
-                <div t-else="" class="table-responsive">
-                    <table class="cems-hub-table">
-                        <thead>
-                            <tr>
-                                <th>Check In</th>
-                                <th>Check Out</th>
-                                <th>Status</th>
-                                <th>Distance</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <t t-foreach="attendance_history" t-as="att">
-                                <tr>
-                                    <td><span t-field="att.check_in"/></td>
-                                    <td>
-                                        <t t-if="att.check_out">
-                                            <span t-field="att.check_out"/>
-                                        </t>
-                                        <t t-else="">—</t>
-                                    </td>
-                                    <td>
-                                        <span t-if="not att.check_out" class="cems-hub-badge ok">Open</span>
-                                        <span t-else="" class="cems-hub-badge">Closed</span>
-                                    </td>
-                                    <td>
-                                        <t t-if="att.cems_distance_m">
-                                            <t t-esc="'%.0f' % att.cems_distance_m"/> m
-                                        </t>
-                                        <t t-else="">—</t>
-                                    </td>
-                                </tr>
+
+                <!-- Status strip -->
+                <div class="cems-att-history-status cems-hub-panel mb-3">
+                    <div class="cems-att-history-status-main">
+                        <div>
+                            <p class="cems-att-history-kicker mb-1">Current status</p>
+                            <t t-if="not employee">
+                                <h2 class="mb-1">No employee linked</h2>
+                                <p class="cems-hub-muted mb-0">Ask HR to set Related User on your employee record.</p>
                             </t>
-                        </tbody>
-                    </table>
+                            <t t-elif="checked_in">
+                                <h2 class="mb-1">Checked in</h2>
+                                <p class="cems-hub-muted mb-0">
+                                    Since <span t-field="open_attendance.check_in"/>
+                                    <t t-if="open_attendance.cems_project_id">
+                                        · <t t-esc="open_attendance.cems_project_id.display_name"/>
+                                    </t>
+                                </p>
+                            </t>
+                            <t t-else="">
+                                <h2 class="mb-1">Not checked in</h2>
+                                <p class="cems-hub-muted mb-0">
+                                    <t t-if="project">Site: <t t-esc="project.display_name"/></t>
+                                    <t t-else="">No site project assigned yet.</t>
+                                </p>
+                            </t>
+                        </div>
+                        <a href="/my" class="cems-hub-att-btn primary">
+                            <t t-if="checked_in">Check out on Dashboard</t>
+                            <t t-else="">Check in on Dashboard</t>
+                        </a>
+                    </div>
+                    <div class="cems-att-history-stats">
+                        <div class="cems-att-history-stat">
+                            <span class="cems-att-history-stat-value" t-esc="attendance_total or 0"/>
+                            <span class="cems-att-history-stat-label">Matching</span>
+                        </div>
+                        <div class="cems-att-history-stat">
+                            <span class="cems-att-history-stat-value" t-esc="attendance_month_count or 0"/>
+                            <span class="cems-att-history-stat-label">This month</span>
+                        </div>
+                        <div class="cems-att-history-stat">
+                            <span class="cems-att-history-stat-value" t-esc="attendance_open_count or 0"/>
+                            <span class="cems-att-history-stat-label">Open</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Toolbar: sort / filter / group / search -->
+                <div class="cems-hub-panel cems-portal-toolbar mb-3">
+                    <t t-call="portal.portal_searchbar">
+                        <t t-set="title">Attendance history</t>
+                        <t t-set="classes" t-value="'cems-att-history-toolbar'"/>
+                    </t>
+                    <form class="cems-att-history-dates" method="get" action="/my/cems/attendance">
+                        <input type="hidden" name="sortby" t-att-value="sortby"/>
+                        <input type="hidden" name="filterby" t-att-value="filterby"/>
+                        <input type="hidden" name="groupby" t-att-value="groupby"/>
+                        <input type="hidden" name="search_in" t-att-value="search_in"/>
+                        <input type="hidden" name="search" t-att-value="search"/>
+                        <label class="cems-att-history-date-field">
+                            <span>From</span>
+                            <input type="date" name="date_begin" class="form-control form-control-sm"
+                                   t-att-value="date_begin"/>
+                        </label>
+                        <label class="cems-att-history-date-field">
+                            <span>To</span>
+                            <input type="date" name="date_end" class="form-control form-control-sm"
+                                   t-att-value="date_end"/>
+                        </label>
+                        <button type="submit" class="btn btn-sm btn-outline-secondary">Apply dates</button>
+                        <a t-if="date_begin or date_end"
+                           class="btn btn-sm btn-link"
+                           t-attf-href="/my/cems/attendance?{{ keep_query('sortby', 'filterby', 'groupby', 'search', 'search_in') }}">
+                            Clear dates
+                        </a>
+                    </form>
+                </div>
+
+                <!-- Results -->
+                <div class="cems-hub-panel">
+                    <div t-if="not employee" class="alert alert-warning mb-0">
+                        No employee record is linked to your user.
+                    </div>
+                    <div t-elif="not attendances" class="cems-att-history-empty">
+                        <p class="mb-1 fw-semibold">No attendance records found</p>
+                        <p class="cems-hub-muted mb-0">Try another filter, date range, or search.</p>
+                    </div>
+                    <t t-else="">
+                        <t t-foreach="grouped_attendances" t-as="group">
+                            <section t-att-class="'cems-att-history-group' + (' has-heading' if groupby and groupby != 'none' else '')">
+                                <header t-if="groupby and groupby != 'none'" class="cems-att-history-group-head">
+                                    <h3 t-esc="group[0]"/>
+                                    <span class="cems-hub-badge"><t t-esc="len(group[1])"/> records</span>
+                                </header>
+                                <div class="table-responsive">
+                                    <table class="cems-hub-table cems-att-history-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Check In</th>
+                                                <th>Check Out</th>
+                                                <th>Hours</th>
+                                                <th>Project</th>
+                                                <th>Status</th>
+                                                <th>Distance</th>
+                                                <th>Selfie</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="group[1]" t-as="att">
+                                                <tr t-att-class="'is-open' if not att.check_out else None">
+                                                    <td>
+                                                        <span class="cems-att-history-dt" t-field="att.check_in"/>
+                                                    </td>
+                                                    <td>
+                                                        <t t-if="att.check_out">
+                                                            <span class="cems-att-history-dt" t-field="att.check_out"/>
+                                                        </t>
+                                                        <t t-else="">—</t>
+                                                    </td>
+                                                    <td>
+                                                        <t t-if="att.check_out">
+                                                            <t t-esc="'%.1f' % (att.worked_hours or 0)"/> h
+                                                        </t>
+                                                        <t t-else="">—</t>
+                                                    </td>
+                                                    <td>
+                                                        <t t-if="att.cems_project_id" t-esc="att.cems_project_id.display_name"/>
+                                                        <t t-else="">—</t>
+                                                    </td>
+                                                    <td>
+                                                        <span t-if="not att.check_out" class="cems-hub-badge ok">Open</span>
+                                                        <span t-else="" class="cems-hub-badge">Closed</span>
+                                                        <span t-if="att.cems_geofence_ok" class="cems-hub-badge ok ms-1">Geo OK</span>
+                                                    </td>
+                                                    <td>
+                                                        <t t-if="att.cems_distance_m">
+                                                            <t t-esc="'%.0f' % att.cems_distance_m"/> m
+                                                        </t>
+                                                        <t t-else="">—</t>
+                                                    </td>
+                                                    <td>
+                                                        <t t-if="att.cems_selfie_filename">
+                                                            <span class="cems-hub-badge ok">Yes</span>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <span class="cems-hub-muted">—</span>
+                                                        </t>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </section>
+                        </t>
+                        <div t-if="pager" class="o_portal_pager d-flex justify-content-center mt-3">
+                            <t t-call="portal.pager"/>
+                        </div>
+                    </t>
                 </div>
             </div>
         </t>

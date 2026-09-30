@@ -230,7 +230,7 @@
             <div class="cems-hub-panel cems-hub-attendance">
                 <div class="cems-hub-att-header">
                     <h2 class="mb-0">Site Attendance</h2>
-                    <a href="/my/cems/attendance/history" class="cems-hub-att-history">
+                    <a href="/my/cems/attendance" class="cems-hub-att-history">
                         <svg viewBox="0 0 24 24" aria-hidden="true">
                             <circle cx="12" cy="12" r="9"/>
                             <path d="M12 7v5l3 2"/>

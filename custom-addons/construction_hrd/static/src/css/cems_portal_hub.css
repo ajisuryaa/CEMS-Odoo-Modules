@@ -1789,3 +1789,138 @@ body.cems-project-dialog-open {
     grid-template-columns: 1fr;
   }
 }
+
+/* ----- Site Attendance history ----- */
+.cems-att-history-status {
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+}
+
+.cems-att-history-status-main {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.cems-att-history-kicker {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #64748b;
+  margin: 0;
+}
+
+.cems-att-history-status-main h2 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--cems-ink);
+}
+
+.cems-att-history-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eef2f1;
+}
+
+.cems-att-history-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: 0.65rem;
+  background: #f8faf9;
+  border: 1px solid #e8efed;
+}
+
+.cems-att-history-stat-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--cems-ink);
+  line-height: 1.1;
+}
+
+.cems-att-history-stat-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.cems-att-history-dates {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.65rem;
+  margin-top: 0.85rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid #eef2f1;
+}
+
+.cems-att-history-date-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.cems-att-history-date-field .form-control {
+  min-width: 9.5rem;
+  border-color: #d7e2df;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  color: var(--cems-ink);
+}
+
+.cems-att-history-empty {
+  text-align: center;
+  padding: 2.5rem 1rem;
+}
+
+.cems-att-history-group.has-heading + .cems-att-history-group.has-heading {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid #eef2f1;
+}
+
+.cems-att-history-group-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.cems-att-history-group-head h3 {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--cems-ink);
+}
+
+.cems-att-history-table tr.is-open td {
+  background: rgba(13, 148, 136, 0.04);
+}
+
+.cems-att-history-dt {
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+@media (max-width: 767.98px) {
+  .cems-att-history-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .cems-att-history-status-main .cems-hub-att-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

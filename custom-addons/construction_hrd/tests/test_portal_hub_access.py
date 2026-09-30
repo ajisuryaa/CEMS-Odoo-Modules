@@ -87,12 +87,11 @@ class TestCemsPortalRouteHardening(HttpCase):
         self.assertIn(resp.status_code, (301, 302, 303, 307))
         self.assertIn('/my/account', resp.headers.get('Location', ''))
 
-    def test_attendance_get_redirects_to_hub(self):
+    def test_attendance_page_renders_for_portal(self):
         self.authenticate('cems_route_portal@example.com', 'portalportal')
-        resp = self.url_open('/my/cems/attendance', allow_redirects=False)
-        self.assertIn(resp.status_code, (301, 302, 303, 307))
-        location = resp.headers.get('Location', '')
-        self.assertTrue(location.endswith('/my') or '/my?' in location)
+        resp = self.url_open('/my/cems/attendance')
+        self.assertEqual(resp.status_code, 200)
+        self.assertIn(b'Attendance history', resp.content)
 
     def test_signup_redirects_home(self):
         resp = self.url_open('/web/signup', allow_redirects=False)

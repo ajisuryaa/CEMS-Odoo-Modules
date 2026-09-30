@@ -75,7 +75,7 @@ class IrHttp(models.AbstractModel):
             {
                 'id': 'cems_attendance',
                 'label': 'Site Attendance',
-                'url': '/my',
+                'url': '/my/cems/attendance',
                 'icon': 'attendance',
             },
             {
