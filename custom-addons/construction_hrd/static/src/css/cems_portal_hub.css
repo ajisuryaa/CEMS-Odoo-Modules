@@ -1924,3 +1924,374 @@ body.cems-project-dialog-open {
     justify-content: center;
   }
 }
+
+/* ----- Settings / My Profile (layout inspired by settings UI, CEMS theme) ----- */
+.cems-settings {
+  max-width: 56rem;
+}
+
+.cems-settings-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.cems-settings-title {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--cems-ink);
+}
+
+.cems-settings-subtitle {
+  margin: 0.35rem 0 0;
+  font-size: 0.95rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.cems-settings-header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.cems-settings-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  min-height: 2.4rem;
+  padding: 0.45rem 1rem;
+  border-radius: 0.55rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none !important;
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.cems-settings-btn.ghost {
+  background: #fff;
+  color: #475569 !important;
+  border-color: #cbd5e1;
+}
+
+.cems-settings-btn.ghost:hover {
+  border-color: #99d5ce;
+  color: var(--cems-leaf) !important;
+}
+
+.cems-settings-btn.primary {
+  background: linear-gradient(180deg, var(--cems-leaf-bright) 0%, var(--cems-leaf) 100%);
+  color: #fff !important;
+  border-color: #0f766e;
+  box-shadow: 0 6px 14px rgba(13, 148, 136, 0.25);
+}
+
+.cems-settings-btn.primary:hover {
+  filter: brightness(1.03);
+}
+
+.cems-settings-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  padding: 0.3rem;
+  margin-bottom: 1.25rem;
+  border-radius: 0.85rem;
+  background: #e8efed;
+}
+
+.cems-settings-tab {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 0.95rem;
+  border-radius: 0.65rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #64748b !important;
+  text-decoration: none !important;
+  border: 1px solid transparent;
+}
+
+.cems-settings-tab:hover {
+  color: var(--cems-ink) !important;
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.cems-settings-tab.is-active {
+  background: #fff;
+  color: var(--cems-ink) !important;
+  border-color: #d7e2df;
+  box-shadow: 0 2px 8px rgba(15, 28, 26, 0.06);
+}
+
+.cems-settings-banner {
+  display: flex;
+  gap: 0.85rem;
+  align-items: flex-start;
+  padding: 0.9rem 1.1rem;
+  margin-bottom: 1.15rem;
+  border-radius: 0.75rem;
+  background: rgba(13, 148, 136, 0.1);
+  border: 1px solid rgba(13, 148, 136, 0.22);
+  color: var(--cems-ink);
+}
+
+.cems-settings-banner.warn {
+  background: rgba(234, 179, 8, 0.12);
+  border-color: rgba(202, 138, 4, 0.28);
+}
+
+.cems-settings-banner-icon {
+  flex: 0 0 auto;
+  width: 1.35rem;
+  height: 1.35rem;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: var(--cems-leaf);
+  color: #fff;
+}
+
+.cems-settings-banner.warn .cems-settings-banner-icon {
+  background: #ca8a04;
+}
+
+.cems-settings-banner-body {
+  font-size: 0.875rem;
+}
+
+.cems-settings-banner-body strong {
+  display: block;
+  margin-bottom: 0.15rem;
+}
+
+.cems-settings-panel {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.9rem;
+  padding: 1.35rem 1.5rem 0.5rem;
+  box-shadow: 0 1px 2px rgba(15, 28, 26, 0.04);
+}
+
+.cems-settings-section-title {
+  margin: 0 0 0.35rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--cems-ink);
+}
+
+.cems-settings-rows {
+  margin-top: 0.25rem;
+}
+
+.cems-settings-row {
+  display: grid;
+  grid-template-columns: minmax(10rem, 13.5rem) minmax(0, 1fr) auto;
+  gap: 1rem 1.25rem;
+  align-items: start;
+  padding: 1.1rem 0;
+  border-top: 1px solid #eef2f1;
+}
+
+.cems-settings-row-block {
+  grid-template-columns: minmax(10rem, 13.5rem) minmax(0, 1fr);
+}
+
+.cems-settings-row-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.cems-settings-label {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--cems-ink);
+}
+
+.cems-settings-label .req {
+  color: var(--cems-leaf);
+  font-weight: 700;
+}
+
+.cems-settings-hint {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: #94a3b8;
+  line-height: 1.35;
+}
+
+.cems-settings-row-value {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #334155;
+  min-width: 0;
+}
+
+.cems-settings-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.cems-settings-address {
+  line-height: 1.45;
+}
+
+.cems-settings-row-actions {
+  text-align: right;
+  white-space: nowrap;
+  padding-top: 0.1rem;
+}
+
+.cems-settings-link {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--cems-leaf) !important;
+  text-decoration: underline !important;
+  text-underline-offset: 0.15em;
+}
+
+.cems-settings-link:hover {
+  color: #0f766e !important;
+}
+
+.cems-settings-avatar {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 999px;
+  object-fit: cover;
+  border: 2px solid #e2e8f0;
+  background: #f8faf9;
+}
+
+.cems-settings-verified {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.cems-settings-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.05rem;
+  height: 1.05rem;
+  border-radius: 999px;
+  background: rgba(13, 148, 136, 0.15);
+  color: var(--cems-leaf);
+  font-size: 0.65rem;
+  font-weight: 700;
+}
+
+.cems-settings-edit-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.cems-settings-form .form-control,
+.cems-settings-security-form .form-control {
+  border-color: #d7e2df;
+  border-radius: 0.55rem;
+  font-weight: 500;
+}
+
+.cems-settings-form .form-control:focus,
+.cems-settings-security-form .form-control:focus {
+  border-color: var(--cems-leaf);
+  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
+}
+
+.cems-settings-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.65rem;
+  padding: 1.15rem 0 1.35rem;
+  border-top: 1px solid #eef2f1;
+  margin-top: 0.5rem;
+}
+
+.cems-settings-security-form {
+  max-width: 36rem;
+  width: 100%;
+}
+
+.cems-settings-password-block {
+  padding: 0.35rem 0 1.5rem;
+}
+
+.cems-settings-password-intro {
+  margin-bottom: 1.15rem;
+}
+
+.cems-settings-photo-edit {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.15rem;
+  padding: 0.25rem 0 1.25rem;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid #eef2f1;
+}
+
+.cems-settings-avatar-lg {
+  width: 5.5rem;
+  height: 5.5rem;
+}
+
+.cems-settings-photo-meta {
+  min-width: 12rem;
+  flex: 1;
+}
+
+/* Hide company / VAT on CEMS profile edit (not part of worker profile) */
+.cems-settings-form #company_name_div,
+.cems-settings-form #div_vat {
+  display: none !important;
+}
+
+.cems-settings-form .input-group .o_show_password,
+.cems-settings-security-form .input-group .o_show_password {
+  background: #fff;
+  color: #64748b;
+}
+
+.cems-settings-form .input-group .o_show_password:hover,
+.cems-settings-security-form .input-group .o_show_password:hover {
+  color: var(--cems-leaf);
+}
+
+@media (max-width: 767.98px) {
+  .cems-settings-row,
+  .cems-settings-row-block {
+    grid-template-columns: 1fr;
+    gap: 0.45rem;
+  }
+
+  .cems-settings-row-actions {
+    text-align: left;
+  }
+
+  .cems-settings-panel {
+    padding: 1.1rem 1rem 0.35rem;
+  }
+
+  .cems-settings-security-form {
+    max-width: none;
+  }
+}

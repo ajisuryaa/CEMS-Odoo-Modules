@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 """CEMS portal route hardening for external / portal users (flow alignment)."""
+import base64
+import json
 import logging
 
 from odoo import _
@@ -11,6 +13,8 @@ from odoo.http import request, route
 from .portal_mixin import CemsPortalMixin
 
 _logger = logging.getLogger(__name__)
+
+CEMS_PROFILE_IMAGE_MAX_BYTES = 5 * 1024 * 1024
 
 
 def _cems_portal_block_redirect(fallback='/my'):
@@ -143,6 +147,9 @@ class CemsPortalHub(CemsPortalMixin, CustomerPortal):
         values['open_deactivate_modal'] = False
         values['page_name'] = 'account'
         values['page_title'] = _('Connection & Security')
+        values['settings_tab'] = 'security'
+        values.setdefault('errors', {})
+        values.setdefault('success', {})
         values = self._cems_inject_shell_values(values)
 
         if request.httprequest.method == 'POST':
@@ -152,15 +159,102 @@ class CemsPortalHub(CemsPortalMixin, CustomerPortal):
                 post['new2'].strip(),
             ))
 
-        return request.render('portal.portal_my_security', values, headers={
+        return request.render('construction_hrd.cems_portal_security', values, headers={
             'X-Frame-Options': 'SAMEORIGIN',
             'Content-Security-Policy': "frame-ancestors 'self'",
         })
 
-    # --- Point 7: account stays wrapped (shell via inherit + inject) ---
+    # --- Point 7: CEMS settings-style profile ---
     @route(['/my/account'], type='http', auth='user', website=True)
     def account(self, **kwargs):
-        return super().account(**kwargs)
+        values = self._prepare_my_account_rendering_values(**kwargs)
+        partner = values.get('partner_sudo') or request.env.user.partner_id
+        employee = self._cems_get_employee()
+        address_lines = [
+            line for line in (
+                partner.street or False,
+                partner.street2 or False,
+                ', '.join(
+                    p for p in (
+                        partner.city or '',
+                        partner.state_id.name if partner.state_id else '',
+                        partner.zip or '',
+                    ) if p
+                ) or False,
+                partner.country_id.name if partner.country_id else False,
+            ) if line
+        ]
+        values.update({
+            'page_name': 'my_details',
+            'page_title': _('My Profile'),
+            'settings_tab': 'profile',
+            'profile_edit': str(kwargs.get('edit') or '') in ('1', 'true', 'True'),
+            'employee': employee,
+            'site_project': (
+                employee.cems_get_attendance_project() if employee else False
+            ),
+            'partner_address_lines': address_lines,
+            'discard_url': '/my/account',
+            'callback': kwargs.get('redirect') or '/my/account',
+        })
+        values = self._cems_inject_shell_values(values)
+        response = request.render('construction_hrd.cems_portal_profile', values)
+        response.headers['X-Frame-Options'] = 'SAMEORIGIN'
+        response.headers['Content-Security-Policy'] = "frame-ancestors 'self'"
+        return response
+
+    def _cems_save_profile_image_from_request(self):
+        """Persist uploaded avatar from multipart profile save, if present."""
+        uploaded = request.httprequest.files.get('image_1920')
+        if not uploaded or not getattr(uploaded, 'filename', None):
+            return
+        raw = uploaded.read()
+        if not raw:
+            return
+        if len(raw) > CEMS_PROFILE_IMAGE_MAX_BYTES:
+            _logger.warning(
+                'CEMS profile image rejected for uid=%s: size=%s',
+                request.env.user.id,
+                len(raw),
+            )
+            return
+        content_type = (uploaded.mimetype or '').lower()
+        if content_type and not content_type.startswith('image/'):
+            _logger.warning(
+                'CEMS profile image rejected for uid=%s: mimetype=%s',
+                request.env.user.id,
+                content_type,
+            )
+            return
+        partner = request.env.user.partner_id.sudo()
+        partner.write({'image_1920': base64.b64encode(raw)})
+
+    @route(
+        '/my/address/submit',
+        type='http',
+        methods=['POST'],
+        auth='user',
+        website=True,
+        sitemap=False,
+    )
+    def portal_address_submit(self, partner_id=None, **form_data):
+        # Drop company/VAT updates from CEMS profile form (not shown in UI).
+        form_data.pop('company_name', None)
+        form_data.pop('vat', None)
+        response = super().portal_address_submit(partner_id=partner_id, **form_data)
+        try:
+            payload = json.loads(response)
+        except (TypeError, ValueError, json.JSONDecodeError):
+            return response
+        if payload.get('redirectUrl'):
+            try:
+                self._cems_save_profile_image_from_request()
+            except Exception:
+                _logger.exception(
+                    'CEMS profile image save failed for uid=%s',
+                    request.env.user.id,
+                )
+        return response
 
 
 class CemsProjectPortal(CemsPortalMixin, ProjectCustomerPortal):

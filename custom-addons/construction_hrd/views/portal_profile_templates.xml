@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Shared Settings chrome: title + tabs (My profile / Security) -->
+    <template id="cems_settings_chrome" name="CEMS Settings Chrome">
+        <div class="cems-settings" t-att-data-tab="settings_tab or 'profile'">
+            <header class="cems-settings-header">
+                <div class="cems-settings-header-text">
+                    <h1 class="cems-settings-title">Settings</h1>
+                    <p class="cems-settings-subtitle">
+                        Manage your details and personal preferences here.
+                    </p>
+                </div>
+                <div class="cems-settings-header-actions">
+                    <a t-if="settings_tab == 'profile' and not profile_edit"
+                       href="/my/account?edit=1"
+                       class="cems-settings-btn primary">Edit profile</a>
+                </div>
+            </header>
+
+            <nav class="cems-settings-tabs" aria-label="Settings sections">
+                <a href="/my/account"
+                   t-att-class="'cems-settings-tab' + (' is-active' if settings_tab == 'profile' else '')">
+                    My profile
+                </a>
+                <a href="/my/security"
+                   t-att-class="'cems-settings-tab' + (' is-active' if settings_tab == 'security' else '')">
+                    Security
+                </a>
+            </nav>
+
+            <t t-out="0"/>
+        </div>
+    </template>
+
+    <!-- My Profile — settings layout (CEMS theme) -->
+    <template id="cems_portal_profile" name="CEMS My Profile">
+        <t t-call="construction_hrd.cems_portal_layout">
+            <t t-set="page_title">My Profile</t>
+            <t t-set="settings_tab" t-value="'profile'"/>
+            <t t-call="construction_hrd.cems_settings_chrome">
+                <t t-set="partner" t-value="partner_sudo or request.env.user.partner_id"/>
+                <t t-set="user" t-value="request.env.user"/>
+
+                <div t-if="not employee" class="cems-settings-banner warn" role="status">
+                    <span class="cems-settings-banner-icon" aria-hidden="true">i</span>
+                    <div class="cems-settings-banner-body">
+                        <strong>Employee record not linked</strong>
+                        <p class="mb-0">
+                            Ask HR to set <em>Related User</em> on your employee so attendance
+                            and site assignment work correctly.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- View mode: row list -->
+                <section t-if="not profile_edit" class="cems-settings-panel">
+                    <h2 class="cems-settings-section-title">My profile</h2>
+
+                    <div class="cems-settings-rows">
+                        <div class="cems-settings-row">
+                            <div class="cems-settings-row-label">
+                                <span class="cems-settings-label">Login <span class="req">*</span></span>
+                                <span class="cems-settings-hint">Used to sign in to CEMS Portal.</span>
+                            </div>
+                            <div class="cems-settings-row-value" t-esc="user.login"/>
+                            <div class="cems-settings-row-actions">
+                                <a href="/my/security" class="cems-settings-link">Manage</a>
+                            </div>
+                        </div>
+
+                        <div class="cems-settings-row">
+                            <div class="cems-settings-row-label">
+                                <span class="cems-settings-label">Photo</span>
+                                <span class="cems-settings-hint">Shown on your portal profile.</span>
+                            </div>
+                            <div class="cems-settings-row-value">
+                                <img class="cems-settings-avatar"
+                                     t-attf-src="/web/image/res.partner/{{partner.id}}/avatar_128?unique={{partner.write_date}}"
+                                     alt="Profile photo"/>
+                            </div>
+                            <div class="cems-settings-row-actions">
+                                <a href="/my/account?edit=1#o_cems_profile_photo" class="cems-settings-link">Edit</a>
+                            </div>
+                        </div>
+
+                        <div class="cems-settings-row">
+                            <div class="cems-settings-row-label">
+                                <span class="cems-settings-label">Full name <span class="req">*</span></span>
+                            </div>
+                            <div class="cems-settings-row-value">
+                                <t t-esc="partner.name or '—'"/>
+                            </div>
+                            <div class="cems-settings-row-actions">
+                                <a href="/my/account?edit=1#o_name" class="cems-settings-link">Edit</a>
+                            </div>
+                        </div>
+
+                        <div class="cems-settings-row">
+                            <div class="cems-settings-row-label">
+                                <span class="cems-settings-label">Contact email <span class="req">*</span></span>
+                                <span class="cems-settings-hint">Add at least one contact email.</span>
+                            </div>
+                            <div class="cems-settings-row-value cems-settings-stack">
+                                <span t-if="partner.email" t-esc="partner.email"/>
+                                <span t-else="" class="cems-hub-muted">—</span>
+                            </div>
+                            <div class="cems-settings-row-actions">
+                                <a href="/my/account?edit=1#o_email" class="cems-settings-link">Edit</a>
+                            </div>
+                        </div>
+
+                        <div class="cems-settings-row">
+                            <div class="cems-settings-row-label">
+                                <span class="cems-settings-label">Phone</span>
+                            </div>
+                            <div class="cems-settings-row-value">
+                                <t t-esc="partner.phone or '—'"/>
+                            </div>
+                            <div class="cems-settings-row-actions">
+                                <a href="/my/account?edit=1#o_phone" class="cems-settings-link">Edit</a>
+                            </div>
+                        </div>
+
+                        <div class="cems-settings-row">
+                            <div class="cems-settings-row-label">
+                                <span class="cems-settings-label">Address <span class="req">*</span></span>
+                            </div>
+                            <div class="cems-settings-row-value cems-settings-address">
+                                <t t-if="partner_address_lines">
+                                    <t t-foreach="partner_address_lines" t-as="line">
+                                        <span t-esc="line"/><br t-if="not line_last"/>
+                                    </t>
+                                </t>
+                                <t t-else="">—</t>
+                            </div>
+                            <div class="cems-settings-row-actions">
+                                <a href="/my/account?edit=1#o_street" class="cems-settings-link">Edit</a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Edit mode: photo + portal address form -->
+                <section t-else="" class="o_customer_address_fill cems-settings-panel cems-settings-edit">
+                    <div class="cems-settings-edit-head">
+                        <h2 class="cems-settings-section-title mb-0">Edit profile</h2>
+                        <a href="/my/account" class="cems-settings-link">Cancel</a>
+                    </div>
+                    <div id="errors"/>
+                    <form action="/my/address/submit"
+                          method="post"
+                          name="address_form"
+                          enctype="multipart/form-data"
+                          class="address_autoformat cems-settings-form"
+                          t-att-data-company-country-code="res_company.country_id.code"
+                          t-att-data-submit-url="'/my/address/submit'">
+
+                        <div class="cems-settings-photo-edit" id="o_cems_profile_photo">
+                            <div class="cems-settings-photo-preview">
+                                <img id="o_cems_profile_photo_img"
+                                     class="cems-settings-avatar cems-settings-avatar-lg"
+                                     t-attf-src="/web/image/res.partner/{{partner.id}}/avatar_128?unique={{partner.write_date}}"
+                                     alt="Profile photo"/>
+                            </div>
+                            <div class="cems-settings-photo-meta">
+                                <span class="cems-settings-label">Photo</span>
+                                <p class="cems-settings-hint mb-2">
+                                    Upload a clear face photo (JPG or PNG). Max about 5 MB.
+                                </p>
+                                <div class="d-flex flex-wrap gap-2 align-items-center">
+                                    <label class="cems-settings-btn ghost mb-0" for="o_cems_profile_photo_input">
+                                        Choose image
+                                    </label>
+                                    <input type="file"
+                                           class="d-none"
+                                           name="image_1920"
+                                           id="o_cems_profile_photo_input"
+                                           accept="image/*"/>
+                                    <span class="cems-hub-muted small" id="o_cems_profile_photo_name">No file selected</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div name="address_details" class="row">
+                            <t t-call="portal.address_form_fields"/>
+                        </div>
+                        <div class="cems-settings-form-actions">
+                            <a href="/my/account" class="cems-settings-btn ghost">Discard</a>
+                            <button type="submit" id="save_address" class="cems-settings-btn primary">
+                                Save changes
+                            </button>
+                        </div>
+                    </form>
+                </section>
+            </t>
+        </t>
+    </template>
+
+    <!-- Security — same settings chrome -->
+    <template id="cems_portal_security" name="CEMS Security Settings">
+        <t t-call="construction_hrd.cems_portal_layout">
+            <t t-set="page_title">Connection &amp; Security</t>
+            <t t-set="settings_tab" t-value="'security'"/>
+            <t t-call="construction_hrd.cems_settings_chrome">
+                <section class="cems-settings-panel">
+                    <h2 class="cems-settings-section-title">Security</h2>
+
+                    <div class="alert alert-danger" role="alert" t-if="get_error(errors)">
+                        <t t-esc="errors"/>
+                    </div>
+                    <div class="alert alert-success" role="alert" t-if="success and success.get('password')">
+                        Password updated.
+                    </div>
+
+                    <div class="cems-settings-password-block">
+                        <div class="cems-settings-password-intro">
+                            <span class="cems-settings-label">Change password</span>
+                            <p class="cems-settings-hint mb-0">
+                                Use a strong password you do not reuse elsewhere. After updating,
+                                you stay signed in on this device.
+                            </p>
+                        </div>
+                        <form action="/my/security" method="post" class="oe_reset_password_form cems-settings-security-form">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <input type="hidden" name="op" value="password"/>
+
+                            <div class="mb-3">
+                                <label for="current" class="form-label">Current password</label>
+                                <p class="cems-settings-hint mb-1">Enter the password you use today to sign in.</p>
+                                <div class="input-group">
+                                    <input type="password"
+                                           t-attf-class="form-control {{ 'is-invalid' if get_error(errors, 'password.old') else '' }}"
+                                           id="current" name="old"
+                                           autocomplete="current-password" required="required"/>
+                                    <button class="btn border border-start-0 o_show_password rounded-end" type="button">
+                                        <i class="fa fa-eye"/>
+                                    </button>
+                                    <div class="invalid-feedback" t-out="get_error(errors, 'password.old')"/>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="new" class="form-label">New password</label>
+                                <p class="cems-settings-hint mb-1">
+                                    At least 8 characters. Mix letters, numbers, and a symbol if possible.
+                                </p>
+                                <div class="input-group">
+                                    <input type="password"
+                                           t-attf-class="form-control {{ 'is-invalid' if get_error(errors, 'password.new1') else '' }}"
+                                           id="new" name="new1"
+                                           autocomplete="new-password" required="required"/>
+                                    <button class="btn border border-start-0 o_show_password rounded-end" type="button">
+                                        <i class="fa fa-eye"/>
+                                    </button>
+                                    <div class="invalid-feedback" t-out="get_error(errors, 'password.new1')"/>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="new2" class="form-label">Confirm new password</label>
+                                <p class="cems-settings-hint mb-1">Re-type the new password to avoid typos.</p>
+                                <div class="input-group">
+                                    <input type="password"
+                                           t-attf-class="form-control {{ 'is-invalid' if get_error(errors, 'password.new2') else '' }}"
+                                           id="new2" name="new2"
+                                           autocomplete="new-password" required="required"/>
+                                    <button class="btn border border-start-0 o_show_password rounded-end" type="button">
+                                        <i class="fa fa-eye"/>
+                                    </button>
+                                    <div class="invalid-feedback" t-out="get_error(errors, 'password.new2')"/>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="cems-settings-btn primary">Update password</button>
+                        </form>
+                    </div>
+                </section>
+            </t>
+        </t>
+    </template>
+</odoo>
