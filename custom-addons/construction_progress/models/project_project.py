@@ -103,7 +103,9 @@ class ProjectProject(models.Model):
         for project in self:
             missing = project.cems_engineer_ids - project.cems_member_ids
             if missing:
-                project.cems_member_ids = [(4, uid) for uid in missing.ids]
+                project.with_context(cems_skip_site_team_hooks=True).write({
+                    'cems_member_ids': [(4, uid) for uid in missing.ids],
+                })
 
     def _cems_sync_site_team_portal_access(self):
         """Auto-share Site Team on portal (/my/projects).
@@ -124,7 +126,9 @@ class ProjectProject(models.Model):
                 'portal',
             ):
                 # Invited-only: Site Team are the invitees (not all portal users)
-                project.write({'privacy_visibility': 'invited_users'})
+                project.with_context(cems_skip_site_team_hooks=True).write({
+                    'privacy_visibility': 'invited_users',
+                })
             if partners:
                 project.message_subscribe(partner_ids=partners.ids)
             # Portal / shared partners → project.collaborator
@@ -137,11 +141,15 @@ class ProjectProject(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         projects = super().create(vals_list)
+        if self.env.context.get('cems_skip_site_team_hooks'):
+            return projects
         projects._cems_sync_engineers_into_members()
         projects._cems_sync_site_team_portal_access()
         return projects
 
     def write(self, vals):
+        if self.env.context.get('cems_skip_site_team_hooks'):
+            return super().write(vals)
         res = super().write(vals)
         if 'cems_engineer_ids' in vals:
             self._cems_sync_engineers_into_members()

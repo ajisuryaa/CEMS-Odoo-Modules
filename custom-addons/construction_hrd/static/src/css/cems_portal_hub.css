@@ -417,14 +417,34 @@ body:has(.cems-portal-shell) main {
 }
 
 .cems-hub-notify-item {
-  display: flex;
-  gap: 0.7rem;
-  padding: 0.7rem 0.65rem;
   border-radius: 0.65rem;
 }
 
 .cems-hub-notify-item.is-unread {
   background: rgba(13, 148, 136, 0.06);
+}
+
+.cems-hub-notify-item-link {
+  display: flex;
+  gap: 0.7rem;
+  padding: 0.7rem 0.65rem;
+  border-radius: 0.65rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.cems-hub-notify-item-link:hover {
+  background: rgba(15, 23, 42, 0.04);
+  text-decoration: none;
+  color: inherit;
+}
+
+.cems-hub-notify-empty {
+  padding: 1.25rem 0.85rem;
+  text-align: center;
+  font-size: 0.82rem;
+  font-weight: 550;
+  color: #94a3b8;
 }
 
 .cems-hub-notify-item-icon {

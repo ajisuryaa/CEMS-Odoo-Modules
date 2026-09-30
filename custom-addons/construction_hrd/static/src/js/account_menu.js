@@ -1,4 +1,4 @@
-/** Topbar dropdowns: account menu + notifications panel */
+/** Topbar dropdowns: account menu + real notification panel */
 (function () {
     function closeDrop(wrap, btn, panel) {
         if (!wrap || !btn || !panel) {
@@ -15,11 +15,39 @@
         panel.hidden = false;
     }
 
-    function toggleDrop(wrap, btn, panel) {
-        if (wrap.classList.contains("is-open")) {
-            closeDrop(wrap, btn, panel);
+    function cemsJsonRpc(url, params) {
+        return fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            credentials: "same-origin",
+            body: JSON.stringify({
+                jsonrpc: "2.0",
+                method: "call",
+                params: params || {},
+                id: Date.now(),
+            }),
+        }).then(function (response) {
+            return response.json();
+        }).then(function (payload) {
+            if (payload && payload.error) {
+                throw payload.error;
+            }
+            return (payload && payload.result) || {};
+        });
+    }
+
+    function updateBadge(badge, count) {
+        if (!badge) {
+            return;
+        }
+        if (count > 0) {
+            badge.hidden = false;
+            badge.textContent = String(count);
         } else {
-            openDrop(wrap, btn, panel);
+            badge.hidden = true;
+            badge.textContent = "";
         }
     }
 
@@ -33,6 +61,7 @@
         var notifyPanel = document.getElementById("o_cems_hub_notify_panel");
         var markAllBtn = document.getElementById("o_cems_hub_notify_mark_all");
         var badge = notifyWrap && notifyWrap.querySelector(".cems-hub-notify-badge");
+        var meta = notifyPanel && notifyPanel.querySelector(".cems-hub-notify-head-meta");
 
         function closeAll() {
             closeDrop(accountWrap, accountBtn, accountMenu);
@@ -71,16 +100,45 @@
             markAllBtn.addEventListener("click", function (ev) {
                 ev.preventDefault();
                 ev.stopPropagation();
-                notifyPanel.querySelectorAll(".cems-hub-notify-item.is-unread").forEach(function (item) {
-                    item.classList.remove("is-unread");
+                cemsJsonRpc("/my/cems/notifications/mark_all_read", {}).then(function (result) {
+                    notifyPanel.querySelectorAll(".cems-hub-notify-item.is-unread").forEach(function (item) {
+                        item.classList.remove("is-unread");
+                    });
+                    if (meta) {
+                        meta.textContent = "All caught up";
+                    }
+                    updateBadge(badge, (result && result.unread_count) || 0);
+                }).catch(function () {
+                    /* keep UI as-is on failure */
                 });
-                var meta = notifyPanel.querySelector(".cems-hub-notify-head-meta");
-                if (meta) {
-                    meta.textContent = "All caught up";
-                }
-                if (badge) {
-                    badge.hidden = true;
-                }
+            });
+        }
+
+        if (notifyPanel) {
+            notifyPanel.querySelectorAll("a.cems-hub-notify-item-link[data-notify-id]").forEach(function (link) {
+                link.addEventListener("click", function () {
+                    var id = parseInt(link.getAttribute("data-notify-id"), 10);
+                    if (!id) {
+                        return;
+                    }
+                    var item = link.closest(".cems-hub-notify-item");
+                    cemsJsonRpc("/my/cems/notifications/mark_read", {
+                        notification_ids: [id],
+                    }).then(function (result) {
+                        if (item) {
+                            item.classList.remove("is-unread");
+                        }
+                        var unread = result && typeof result.unread_count === "number"
+                            ? result.unread_count
+                            : 0;
+                        updateBadge(badge, unread);
+                        if (meta) {
+                            meta.textContent = unread > 0 ? unread + " new" : "All caught up";
+                        }
+                    }).catch(function () {
+                        /* navigation still proceeds */
+                    });
+                });
             });
         }
 

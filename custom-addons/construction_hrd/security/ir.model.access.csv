@@ -9,3 +9,6 @@ access_gate_pass_user,construction.gate.pass.user,model_construction_gate_pass,c
 access_gate_pass_engineer,construction.gate.pass.engineer,model_construction_gate_pass,construction_progress.group_cems_engineer,1,1,1,0
 access_gate_pass_manager,construction.gate.pass.manager,model_construction_gate_pass,construction_progress.group_cems_manager,1,1,1,1
 access_gate_pass_portal,construction.gate.pass.portal,model_construction_gate_pass,base.group_portal,1,0,0,0
+access_cems_portal_notification_portal,cems.portal.notification.portal,model_cems_portal_notification,base.group_portal,1,1,0,0
+access_cems_portal_notification_user,cems.portal.notification.user,model_cems_portal_notification,base.group_user,1,1,0,0
+access_cems_portal_notification_manager,cems.portal.notification.manager,model_cems_portal_notification,construction_progress.group_cems_manager,1,1,1,1

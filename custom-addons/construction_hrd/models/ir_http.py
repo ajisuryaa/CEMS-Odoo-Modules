@@ -113,6 +113,7 @@ class IrHttp(models.AbstractModel):
         if not page_title:
             page_title = _(CEMS_PAGE_TITLES.get(page_name, 'Portal'))
         partner = user.partner_id
+        notify = request.env['cems.portal.notification']._cems_portal_feed_for_user(user)
         return {
             'page_name': page_name,
             'page_title': page_title,
@@ -125,4 +126,7 @@ class IrHttp(models.AbstractModel):
             'cems_is_portal': user._is_portal(),
             'cems_can_daily_labor': self._cems_user_can_see_daily_labor(user),
             'cems_active_menu': self._cems_menu_id_from_page_name(page_name),
+            'cems_notifications': notify.get('items') or [],
+            'cems_notify_unread': notify.get('unread_count') or 0,
+            'cems_notify_head_meta': notify.get('head_meta') or '',
         }
