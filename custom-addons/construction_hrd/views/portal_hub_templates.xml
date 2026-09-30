@@ -11,6 +11,9 @@
                t-value="request.env['ir.http']._cems_portal_shell_values(page_name, page_title)"/>
             <t t-set="cems_menu" t-value="_cems_shell.get('cems_menu')"/>
             <t t-set="cems_user_name" t-value="_cems_shell.get('cems_user_name')"/>
+            <t t-set="cems_user_email" t-value="_cems_shell.get('cems_user_email')"/>
+            <t t-set="cems_partner_id" t-value="_cems_shell.get('cems_partner_id')"/>
+            <t t-set="cems_partner_write_date" t-value="_cems_shell.get('cems_partner_write_date')"/>
             <t t-set="cems_is_internal" t-value="_cems_shell.get('cems_is_internal')"/>
             <t t-set="cems_is_portal" t-value="_cems_shell.get('cems_is_portal')"/>
             <t t-set="cems_can_daily_labor" t-value="_cems_shell.get('cems_can_daily_labor')"/>
@@ -104,12 +107,55 @@
                             </div>
                             <div class="cems-hub-topbar-actions">
                                 <h1 class="cems-hub-topbar-title-mobile d-lg-none" t-esc="page_title or 'Dashboard'"/>
-                                <span class="cems-hub-user d-none d-sm-inline" t-esc="cems_user_name"/>
+                                <button type="button"
+                                        class="cems-hub-notify"
+                                        id="o_cems_hub_notify"
+                                        aria-label="Notifications"
+                                        title="Notifications">
+                                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                                        <path d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 1 0-12 0v3.2c0 .5-.2 1-.6 1.4L4 17h5"/>
+                                        <path d="M9.5 17a2.5 2.5 0 0 0 5 0"/>
+                                    </svg>
+                                </button>
+                                <div class="cems-hub-account-wrap" id="o_cems_hub_account_wrap">
+                                    <button type="button"
+                                            class="cems-hub-account"
+                                            id="o_cems_hub_account_btn"
+                                            aria-haspopup="menu"
+                                            aria-expanded="false"
+                                            aria-controls="o_cems_hub_account_menu"
+                                            title="Account menu">
+                                        <img class="cems-hub-account-avatar"
+                                             t-attf-src="/web/image/res.partner/{{cems_partner_id}}/avatar_128?unique={{cems_partner_write_date}}"
+                                             alt=""/>
+                                        <span class="cems-hub-account-meta d-none d-sm-flex">
+                                            <span class="cems-hub-account-name" t-esc="cems_user_name"/>
+                                            <span class="cems-hub-account-email" t-esc="cems_user_email"/>
+                                        </span>
+                                        <span class="cems-hub-account-caret d-none d-sm-inline" aria-hidden="true">
+                                            <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+                                        </span>
+                                    </button>
+                                    <div class="cems-hub-account-menu"
+                                         id="o_cems_hub_account_menu"
+                                         role="menu"
+                                         hidden="hidden">
+                                        <a href="/my/account" class="cems-hub-account-item" role="menuitem">
+                                            <span class="cems-hub-account-item-icon" aria-hidden="true">
+                                                <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></svg>
+                                            </span>
+                                            <span>My Profile</span>
+                                        </a>
+                                        <a href="/web/session/logout?redirect=/" class="cems-hub-account-item is-danger" role="menuitem">
+                                            <span class="cems-hub-account-item-icon" aria-hidden="true">
+                                                <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+                                            </span>
+                                            <span>Logout</span>
+                                        </a>
+                                    </div>
+                                </div>
                                 <a t-if="cems_is_internal" href="/web" class="btn btn-sm btn-outline-secondary d-none d-md-inline-flex">
                                     Back Office
-                                </a>
-                                <a href="/web/session/logout?redirect=/" class="btn btn-sm btn-outline-secondary d-none d-sm-inline-flex">
-                                    Logout
                                 </a>
                             </div>
                         </header>

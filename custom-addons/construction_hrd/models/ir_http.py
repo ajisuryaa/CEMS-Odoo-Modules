@@ -112,11 +112,15 @@ class IrHttp(models.AbstractModel):
         page_name = page_name or 'home'
         if not page_title:
             page_title = _(CEMS_PAGE_TITLES.get(page_name, 'Portal'))
+        partner = user.partner_id
         return {
             'page_name': page_name,
             'page_title': page_title,
             'cems_menu': self._cems_portal_menu(page_name, user=user),
             'cems_user_name': user.name,
+            'cems_user_email': partner.email or user.login or '',
+            'cems_partner_id': partner.id,
+            'cems_partner_write_date': partner.write_date,
             'cems_is_internal': user.has_group('base.group_user'),
             'cems_is_portal': user._is_portal(),
             'cems_can_daily_labor': self._cems_user_can_see_daily_labor(user),

@@ -1,6 +1,6 @@
 {
     'name': 'CEMS Construction HRD',
-    'version': '19.0.1.9.3',
+    'version': '19.0.1.9.5',
     'category': 'Human Resources',
     'summary': 'Site workforce, geofence attendance portal, daily labor & gate pass',
     'description': """
@@ -61,6 +61,7 @@ Site workforce module for PT Dynatech Batam CEMS:
             'construction_hrd/static/src/js/task_tree.js',
             'construction_hrd/static/src/js/project_dialog.js',
             'construction_hrd/static/src/js/profile_photo.js',
+            'construction_hrd/static/src/js/account_menu.js',
             'construction_hrd/static/src/css/portal_attendance.css',
             'construction_hrd/static/src/css/cems_login_home.css',
             'construction_hrd/static/src/css/cems_portal_hub.css',
