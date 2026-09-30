@@ -219,7 +219,7 @@ body:has(.cems-portal-shell) main {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
+  gap: 0.75rem;
   padding: 1rem 1.5rem;
   background: #fff;
   border-bottom: 1px solid #e2e8f0;
@@ -231,8 +231,9 @@ body:has(.cems-portal-shell) main {
 .cems-hub-topbar-left {
   display: flex;
   align-items: center;
-  gap: 0.65rem;
+  gap: 0.55rem;
   min-width: 0;
+  flex: 0 1 auto;
 }
 
 .cems-hub-topbar-brand {
@@ -245,6 +246,7 @@ body:has(.cems-portal-shell) main {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
+  min-width: 0;
 }
 
 .cems-hub-topbar-logo {
@@ -252,6 +254,7 @@ body:has(.cems-portal-shell) main {
   height: 1.85rem;
   object-fit: contain;
   display: block;
+  flex-shrink: 0;
 }
 
 .cems-hub-topbar-brand-text span {
@@ -259,14 +262,17 @@ body:has(.cems-portal-shell) main {
 }
 
 .cems-hub-topbar-title-mobile {
+  flex: 1 1 auto;
+  min-width: 0;
   font-size: 0.95rem;
-  font-weight: 600;
+  font-weight: 700;
   margin: 0;
-  color: #475569;
+  color: var(--cems-ink);
+  letter-spacing: -0.02em;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 42vw;
+  text-align: center;
 }
 
 .cems-hub-topbar h1 {
@@ -279,7 +285,9 @@ body:has(.cems-portal-shell) main {
 .cems-hub-topbar-actions {
   display: flex;
   align-items: center;
-  gap: 0.65rem;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  flex: 0 0 auto;
   flex-wrap: nowrap;
 }
 
@@ -1443,12 +1451,33 @@ body.cems-att-dialog-open {
   }
 
   .cems-hub-topbar {
-    padding: 0.7rem 0.9rem;
+    padding: 0.65rem 0.75rem;
     z-index: 20;
+    gap: 0.45rem;
+  }
+
+  /* Logo only on small screens — page title takes the middle */
+  .cems-hub-topbar-brand-text {
+    display: none;
+  }
+
+  .cems-hub-topbar-logo {
+    width: 1.7rem;
+    height: 1.7rem;
+  }
+
+  .cems-hub-topbar-title-mobile {
+    font-size: 0.9rem;
+    text-align: left;
+    padding: 0 0.15rem;
   }
 
   .cems-hub-topbar-actions {
-    gap: 0.5rem;
+    gap: 0.4rem;
+  }
+
+  .cems-hub-account-meta {
+    display: none !important;
   }
 
   .cems-hub-stats {
@@ -1457,6 +1486,12 @@ body.cems-att-dialog-open {
 
   .cems-hub-content {
     padding: 1rem 1rem 2rem;
+  }
+}
+
+@media (max-width: 419.98px) {
+  .cems-hub-topbar-title-mobile {
+    font-size: 0.84rem;
   }
 }
 

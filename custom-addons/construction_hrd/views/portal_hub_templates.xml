@@ -100,7 +100,7 @@
                                         <span/>
                                     </span>
                                 </button>
-                                <a href="/my" class="cems-hub-topbar-brand d-lg-none">
+                                <a href="/my" class="cems-hub-topbar-brand d-lg-none" title="CEMS Portal">
                                     <img src="/construction_hrd/static/src/img/dynatech_logo.png"
                                          alt="Dynatech"
                                          class="cems-hub-topbar-logo"/>
@@ -108,8 +108,8 @@
                                 </a>
                                 <h1 class="d-none d-lg-block" t-esc="page_title or 'Dashboard'"/>
                             </div>
+                            <h1 class="cems-hub-topbar-title-mobile d-lg-none" t-esc="page_title or 'Dashboard'"/>
                             <div class="cems-hub-topbar-actions">
-                                <h1 class="cems-hub-topbar-title-mobile d-lg-none" t-esc="page_title or 'Dashboard'"/>
                                 <div class="cems-hub-notify-wrap" id="o_cems_hub_notify_wrap">
                                     <button type="button"
                                             class="cems-hub-notify"
