@@ -1887,70 +1887,266 @@ a.cems-task-project-name:hover {
 }
 
 /* ----- Task detail (CEMS) ----- */
-.cems-hub-content .cems-task-detail {
-  --cems-detail-gap: 1rem;
+.cems-hub-content:has(.cems-task-detail) > .container,
+.cems-hub-content:has(.cems-task-detail) > .o_portal_wrap,
+.cems-hub-content:has(.cems-task-detail) .o_portal_sidebar {
+  max-width: none;
+  width: 100%;
+  padding-left: 0;
+  padding-right: 0;
 }
 
-.cems-hub-content .cems-task-detail .o_portal_record_sidebar,
-.cems-hub-content .cems-task-detail .portal_record_sidebar,
-.cems-hub-content .cems-task-detail > .col-lg-4,
-.cems-hub-content .cems-task-detail > [class*="col-lg-4"] {
+.cems-task-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  max-width: none;
+}
+
+.cems-task-detail-hero {
   background: #fff;
   border: 1px solid #e2e8f0;
-  border-radius: 0.75rem;
-  padding: 1.1rem 1.15rem !important;
-  box-shadow: 0 4px 16px rgba(15, 28, 26, 0.05);
-  margin-bottom: 1rem;
+  border-radius: 0.9rem;
+  padding: 1.15rem 1.25rem 1.25rem;
+  box-shadow: 0 4px 16px rgba(15, 28, 26, 0.04);
 }
 
-.cems-hub-content .cems-task-detail-card,
-.cems-hub-content .cems-task-detail-chat {
-  margin-bottom: 0;
-}
-
-.cems-hub-content .cems-task-detail #card_header h3 {
-  font-size: 1.15rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: var(--cems-ink);
-}
-
-.cems-hub-content .cems-task-detail #card_body strong {
-  font-weight: 600;
-  color: #475569;
-}
-
-.cems-hub-content .cems-task-detail #card_body a {
-  color: var(--cems-leaf);
-  font-weight: 500;
+.cems-task-detail-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-bottom: 0.85rem;
+  font-size: 0.82rem;
+  font-weight: 650;
+  color: #64748b;
   text-decoration: none;
 }
 
-.cems-hub-content .cems-task-detail #card_body a:hover {
-  color: #0f766e;
+.cems-task-detail-back svg {
+  width: 1rem;
+  height: 1rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
-.cems-hub-content .cems-task-detail #task_chat h3 {
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--cems-ink);
-  margin-bottom: 0.85rem;
-}
-
-.cems-hub-content .cems-task-detail .nav-link {
-  color: #475569;
-  font-weight: 500;
-  font-size: 0.9rem;
-}
-
-.cems-hub-content .cems-task-detail .nav-link:hover,
-.cems-hub-content .cems-task-detail .nav-link.active {
+.cems-task-detail-back:hover {
   color: var(--cems-leaf);
+  text-decoration: none;
 }
 
-.cems-hub-content .cems-task-detail hr {
-  border-color: #e2e8f0;
-  opacity: 1;
+.cems-task-detail-hero-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.cems-task-detail-kicker {
+  margin: 0 0 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+.cems-task-detail-title {
+  margin: 0;
+  font-size: clamp(1.25rem, 2.2vw, 1.55rem);
+  font-weight: 750;
+  letter-spacing: -0.025em;
+  line-height: 1.25;
+  color: var(--cems-ink);
+}
+
+.cems-task-detail-project {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.4rem;
+  margin: 0.55rem 0 0;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #475569;
+}
+
+.cems-task-detail-project-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+.cems-task-detail-project a {
+  color: var(--cems-leaf);
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.cems-task-detail-project a:hover {
+  color: #0f766e;
+  text-decoration: underline;
+}
+
+.cems-task-detail-hero-aside {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  flex-shrink: 0;
+}
+
+.cems-task-detail-state {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.5rem;
+  min-height: 1.5rem;
+}
+
+.cems-task-detail-panel {
+  padding: 1.15rem 1.25rem 1.25rem;
+}
+
+.cems-task-detail-section-title {
+  margin: 0 0 0.95rem;
+  font-size: 0.95rem;
+  font-weight: 750;
+  letter-spacing: -0.01em;
+  color: var(--cems-ink);
+}
+
+.cems-task-detail-meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+  gap: 0.85rem 1.25rem;
+}
+
+.cems-task-detail-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 0;
+  padding: 0.75rem 0.85rem;
+  background: var(--cems-sand);
+  border-radius: 0.65rem;
+}
+
+.cems-task-detail-meta-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+.cems-task-detail-meta-value {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--cems-ink);
+  line-height: 1.35;
+  word-break: break-word;
+}
+
+.cems-task-detail-people {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.cems-task-detail-people li,
+.cems-task-detail-customer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cems-task-detail-avatar {
+  width: 1.65rem;
+  height: 1.65rem;
+  border-radius: 999px;
+  object-fit: cover;
+  background: #e2e8f0;
+  flex-shrink: 0;
+}
+
+.cems-task-detail-description {
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: #334155;
+  overflow-wrap: anywhere;
+}
+
+.cems-task-detail-description img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+}
+
+.cems-task-detail-description table {
+  width: 100%;
+  margin-bottom: 0.75rem;
+}
+
+.cems-task-detail-attachments {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+  gap: 0.55rem;
+}
+
+.cems-task-detail-attachment {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.65rem 0.75rem;
+  background: var(--cems-sand);
+  border: 1px solid #e2e8f0;
+  border-radius: 0.65rem;
+  color: var(--cems-ink);
+  text-decoration: none;
+  min-width: 0;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.cems-task-detail-attachment:hover {
+  border-color: rgba(13, 148, 136, 0.35);
+  background: rgba(13, 148, 136, 0.06);
+  color: var(--cems-ink);
+  text-decoration: none;
+}
+
+.cems-task-detail-attachment-name {
+  font-size: 0.84rem;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cems-task-detail-chat .o_portal_chatter,
+.cems-task-detail-chat .o_message_thread {
+  margin-top: 0.15rem;
+}
+
+@media (max-width: 767.98px) {
+  .cems-task-detail-hero {
+    padding: 1rem;
+  }
+
+  .cems-task-detail-panel {
+    padding: 1rem;
+  }
 }
 
 /* ----- My Projects list + dialog ----- */

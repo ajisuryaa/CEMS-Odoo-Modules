@@ -35,6 +35,7 @@
     <!-- Detail: Task (inherits portal_sidebar → task_link_preview_portal_layout) -->
     <template id="cems_wrap_portal_my_task" inherit_id="project.portal_my_task">
         <xpath expr="//t[@t-call='project.task_link_preview_portal_layout']" position="before">
+            <t t-set="page_name" t-value="'task'"/>
             <t t-set="page_title" t-value="task.display_name if task else 'Task'"/>
         </xpath>
         <xpath expr="//t[@t-call='project.task_link_preview_portal_layout']" position="attributes">

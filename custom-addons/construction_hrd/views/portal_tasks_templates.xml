@@ -85,16 +85,138 @@
         </xpath>
     </template>
 
-    <!-- Task detail: CEMS shell chrome -->
+    <!-- Task detail: full CEMS portal layout (replaces stock sidebar chrome) -->
     <template id="cems_portal_my_task_chrome" inherit_id="project.portal_my_task">
-        <xpath expr="//div[hasclass('o_project_portal_sidebar')]" position="attributes">
-            <attribute name="class" add="cems-task-detail" separator=" "/>
-        </xpath>
-        <xpath expr="//div[@id='card']" position="attributes">
-            <attribute name="class" add="cems-hub-panel cems-task-detail-card" separator=" "/>
-        </xpath>
-        <xpath expr="//div[@id='task_chat']" position="attributes">
-            <attribute name="class" add="cems-hub-panel cems-task-detail-chat mt-3" separator=" "/>
+        <xpath expr="//div[hasclass('o_project_portal_sidebar')]" position="replace">
+            <div class="cems-task-detail" id="task_content">
+                <header class="cems-task-detail-hero">
+                    <a href="/my/tasks" class="cems-task-detail-back">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M15 18l-6-6 6-6"/>
+                        </svg>
+                        Back to My Tasks
+                    </a>
+                    <div class="cems-task-detail-hero-row">
+                        <div class="cems-task-detail-hero-text">
+                            <p class="cems-task-detail-kicker">
+                                Task #<span t-field="task.id"/>
+                            </p>
+                            <h1 class="cems-task-detail-title" id="card_header" data-anchor="true">
+                                <span t-field="task.name"/>
+                            </h1>
+                            <p class="cems-task-detail-project" t-if="task.project_id">
+                                <span class="cems-task-detail-project-label">Project</span>
+                                <a t-if="project_accessible"
+                                   t-attf-href="/my/projects/#{task.project_id.id}"
+                                   t-field="task.project_id"/>
+                                <span t-else="" t-field="task.project_id"/>
+                            </p>
+                        </div>
+                        <div class="cems-task-detail-hero-aside">
+                            <span t-if="task.stage_id"
+                                  t-att-class="'cems-hub-badge' + (' ok' if task.state == '1_done' else (' warn' if task.state in ('02_changes_requested', '04_waiting_normal') else ''))"
+                                  t-esc="task.stage_id.name"/>
+                            <span class="cems-task-detail-state" title="Status">
+                                <t t-call="project.portal_my_tasks_state_widget_template">
+                                    <t t-set="path" t-value="'task'"/>
+                                </t>
+                            </span>
+                        </div>
+                    </div>
+                </header>
+
+                <section class="cems-hub-panel cems-task-detail-panel" id="card">
+                    <h2 class="cems-task-detail-section-title">Details</h2>
+                    <div class="cems-task-detail-meta" id="card_body">
+                        <div class="cems-task-detail-meta-item">
+                            <span class="cems-task-detail-meta-label">Priority</span>
+                            <span class="cems-task-detail-meta-value cems-task-detail-priority">
+                                <t t-call="project.portal_my_tasks_priority_widget_template"/>
+                            </span>
+                        </div>
+                        <div class="cems-task-detail-meta-item" t-if="task.date_deadline">
+                            <span class="cems-task-detail-meta-label">Deadline</span>
+                            <span class="cems-task-detail-meta-value">
+                                <span t-field="task.date_deadline" t-options='{"widget": "datetime"}'/>
+                            </span>
+                        </div>
+                        <div class="cems-task-detail-meta-item" t-if="task.allocated_hours &gt; 0" name="portal_my_task_allocated_hours">
+                            <span class="cems-task-detail-meta-label">Allocated time</span>
+                            <span class="cems-task-detail-meta-value">
+                                <t t-call="project.portal_my_task_allocated_hours_template"/>
+                            </span>
+                        </div>
+                        <div class="cems-task-detail-meta-item" t-if="task.milestone_id and task.allow_milestones">
+                            <span class="cems-task-detail-meta-label">Milestone</span>
+                            <span class="cems-task-detail-meta-value" t-field="task.milestone_id"/>
+                        </div>
+                        <div class="cems-task-detail-meta-item" t-if="task.user_ids">
+                            <span class="cems-task-detail-meta-label">Assignees</span>
+                            <span class="cems-task-detail-meta-value">
+                                <ul class="cems-task-detail-people">
+                                    <t t-foreach="task.user_ids" t-as="user">
+                                        <li>
+                                            <img class="cems-task-detail-avatar"
+                                                 t-att-src="image_data_uri(user.avatar_128)"
+                                                 alt=""/>
+                                            <span t-esc="user.name"/>
+                                        </li>
+                                    </t>
+                                </ul>
+                            </span>
+                        </div>
+                        <div class="cems-task-detail-meta-item" t-if="task.partner_id">
+                            <span class="cems-task-detail-meta-label">Customer</span>
+                            <span class="cems-task-detail-meta-value">
+                                <span class="cems-task-detail-customer">
+                                    <img class="cems-task-detail-avatar"
+                                         t-att-src="image_data_uri(task.partner_id.avatar_128)"
+                                         alt=""/>
+                                    <span t-esc="task.partner_id.display_name"/>
+                                </span>
+                            </span>
+                        </div>
+                        <!-- Extension hook for other modules -->
+                        <div class="d-none" name="portal_my_task_second_column"/>
+                    </div>
+                </section>
+
+                <section t-if="not is_html_empty(task.description)"
+                         class="cems-hub-panel cems-task-detail-panel">
+                    <h2 class="cems-task-detail-section-title">Description</h2>
+                    <div class="cems-task-detail-description" t-field="task.description"/>
+                </section>
+
+                <section t-if="task.attachment_ids"
+                         class="cems-hub-panel cems-task-detail-panel o_project_portal_attachments">
+                    <h2 class="cems-task-detail-section-title">Attachments</h2>
+                    <ul class="cems-task-detail-attachments">
+                        <t t-foreach="task.attachment_ids" t-as="attachment">
+                            <li>
+                                <a t-attf-href="/web/content/#{attachment.id}?download=true&amp;access_token=#{attachment.access_token}"
+                                   target="_blank"
+                                   data-no-post-process=""
+                                   class="cems-task-detail-attachment">
+                                    <span class="oe_attachment_embedded o_image o_image_small cems-task-detail-attachment-thumb"
+                                          t-att-title="attachment.name"
+                                          t-att-data-mimetype="attachment.mimetype"
+                                          t-attf-data-src="/web/image/#{attachment.id}/50x40?access_token=#{attachment.access_token}"/>
+                                    <span class="cems-task-detail-attachment-name" t-esc="attachment.name"/>
+                                </a>
+                            </li>
+                        </t>
+                    </ul>
+                </section>
+
+                <section class="cems-hub-panel cems-task-detail-panel cems-task-detail-chat"
+                         id="task_chat"
+                         data-anchor="true">
+                    <h2 class="cems-task-detail-section-title">Communication history</h2>
+                    <t t-call="portal.message_thread">
+                        <t t-set="token" t-value="task.access_token"/>
+                    </t>
+                </section>
+            </div>
         </xpath>
     </template>
 </odoo>
