@@ -2291,7 +2291,8 @@ body.cems-project-dialog-open {
 
 /* ----- Settings / My Profile (layout inspired by settings UI, CEMS theme) ----- */
 .cems-settings {
-  max-width: 56rem;
+  max-width: none;
+  width: 100%;
 }
 
 .cems-settings-header {
