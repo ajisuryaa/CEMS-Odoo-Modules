@@ -134,6 +134,12 @@
                                 <t t-call="project.portal_my_tasks_priority_widget_template"/>
                             </span>
                         </div>
+                        <div class="cems-task-detail-meta-item" t-if="task.date_start">
+                            <span class="cems-task-detail-meta-label">Start</span>
+                            <span class="cems-task-detail-meta-value">
+                                <span t-field="task.date_start" t-options='{"widget": "datetime"}'/>
+                            </span>
+                        </div>
                         <div class="cems-task-detail-meta-item" t-if="task.date_deadline">
                             <span class="cems-task-detail-meta-label">Deadline</span>
                             <span class="cems-task-detail-meta-value">

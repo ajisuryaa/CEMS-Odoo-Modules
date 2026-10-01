@@ -1,6 +1,6 @@
 {
     'name': 'CEMS Construction HRD',
-    'version': '19.0.1.11.3',
+    'version': '19.0.1.11.4',
     'category': 'Human Resources',
     'summary': 'Site workforce, geofence attendance portal, daily labor & gate pass',
     'description': """

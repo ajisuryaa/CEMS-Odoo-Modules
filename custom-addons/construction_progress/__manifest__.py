@@ -1,6 +1,6 @@
 {
     'name': 'CEMS Construction Progress',
-    'version': '19.0.1.4.2',
+    'version': '19.0.1.4.4',
     'category': 'Construction',
     'summary': 'WBS, geofence, EVM foundation for CEMS',
     'description': """
@@ -13,6 +13,7 @@ R
 * Project geofence + Site Team assignment
 * Leaflet / OpenStreetMap geofence map widget
 * Task WBS, weightage, physical progress (assignees limited to Site Team)
+* Task Start datetime; Allocated Time auto from Start/Deadline (24h wall-clock, readonly)
 * Project-level EVM (BAC, PV, EV, SPI, P_total)
 * Record rules for multi-project isolation
     """,

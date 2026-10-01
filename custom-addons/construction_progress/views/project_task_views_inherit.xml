@@ -15,6 +15,13 @@
                 <attribute name="domain">[('id', 'in', cems_allowed_user_ids)]</attribute>
                 <attribute name="placeholder">Site Team members only</attribute>
             </xpath>
+            <xpath expr="//label[@for='date_deadline']" position="before">
+                <field name="date_start" string="Start"/>
+            </xpath>
+            <!-- Allocated Time is computed from Start/Deadline — lock UI edits -->
+            <xpath expr="//field[@name='allocated_hours']" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </xpath>
             <xpath expr="//notebook" position="inside">
                 <page string="CEMS / WBS &amp; Progress" name="cems_wbs">
                     <group>
@@ -38,6 +45,7 @@
         <field name="inherit_id" ref="project.view_task_tree2"/>
         <field name="arch" type="xml">
             <xpath expr="//list" position="inside">
+                <field name="date_start" string="Start" optional="show" widget="datetime"/>
                 <field name="wbs_code" string="WBS Code" optional="show"/>
                 <field name="weightage_pct" string="Weightage (%)" optional="show"/>
                 <field name="physical_progress_pct" string="Physical Progress (%)" optional="show"/>

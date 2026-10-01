@@ -15,6 +15,23 @@ class ProjectTask(models.Model):
 
     _inherit = 'project.task'
 
+    date_start = fields.Datetime(
+        string='Start',
+        index=True,
+        copy=False,
+        tracking=True,
+        help='Planned start date and time for this task.',
+    )
+    # Override stock field: auto wall-clock duration; not manually editable.
+    allocated_hours = fields.Float(
+        string='Allocated Time',
+        compute='_compute_cems_allocated_hours',
+        store=True,
+        readonly=True,
+        tracking=True,
+        help='Wall-clock hours between Start and Deadline. '
+             'If Start is empty, uses the current time when Deadline is set/changed.',
+    )
     wbs_code = fields.Char(
         string='WBS Code',
         index=True,
@@ -41,6 +58,18 @@ class ProjectTask(models.Model):
         compute='_compute_cems_allowed_user_ids',
         string='Allowed Assignees',
     )
+
+    @api.depends('date_start', 'date_deadline')
+    def _compute_cems_allocated_hours(self):
+        """24h wall-clock duration; no working-calendar adjustment."""
+        now = fields.Datetime.now()
+        for task in self:
+            if not task.date_deadline:
+                task.allocated_hours = 0.0
+                continue
+            start = task.date_start or now
+            seconds = (task.date_deadline - start).total_seconds()
+            task.allocated_hours = max(seconds / 3600.0, 0.0)
 
     @api.depends('project_id', 'project_id.cems_member_ids')
     def _compute_cems_allowed_user_ids(self):
