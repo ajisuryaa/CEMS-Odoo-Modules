@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="construction_progress.CemsGeofenceMapField">
+        <div class="o_cems_geofence_map" t-att-class="{ 'o_readonly': props.readonly }">
+            <div class="o_cems_geofence_map_toolbar">
+                <p class="o_cems_geofence_map_hint" t-esc="hintText"/>
+                <button t-if="!props.readonly"
+                        type="button"
+                        class="btn btn-sm btn-secondary o_cems_geofence_locate"
+                        t-on-click="onUseMyLocation">
+                    Use my location
+                </button>
+            </div>
+            <div class="o_cems_geofence_map_canvas" t-ref="map"/>
+            <div class="o_cems_geofence_map_controls">
+                <label class="o_cems_geofence_radius_label" for="cems_geofence_radius_input">
+                    Radius (m)
+                </label>
+                <input type="range"
+                       class="o_cems_geofence_radius_range form-range"
+                       min="20"
+                       max="2000"
+                       step="10"
+                       t-att-value="state.radiusInput"
+                       t-att-disabled="props.readonly"
+                       t-on-input="onRadiusInput"
+                       t-on-change="onRadiusChange"/>
+                <input id="cems_geofence_radius_input"
+                       type="number"
+                       class="o_cems_geofence_radius_number form-control form-control-sm"
+                       min="1"
+                       step="1"
+                       t-att-value="state.radiusInput"
+                       t-att-readonly="props.readonly"
+                       t-on-change="onRadiusChange"/>
+                <div class="o_cems_geofence_coords text-muted">
+                    <span t-esc="centerLat.toFixed(7)"/>,
+                    <span t-esc="centerLng.toFixed(7)"/>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

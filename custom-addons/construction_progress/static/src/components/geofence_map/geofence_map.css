@@ -1,0 +1,115 @@
+/* CEMS geofence map (Leaflet + OpenStreetMap) */
+
+/* Char fields are often inline — force full-width block for the map host */
+.o_field_widget:has(> .o_cems_geofence_map),
+.o_field_widget.o_field_cems_geofence_map,
+.o_form_view .o_group .o_field_widget:has(.o_cems_geofence_map) {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  flex: 1 1 100% !important;
+}
+
+.o_cems_geofence_map {
+  width: 100% !important;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin-bottom: 0.5rem;
+}
+
+.o_cems_geofence_map_toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.o_cems_geofence_map_hint {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #64748b;
+  flex: 1 1 14rem;
+}
+
+.o_cems_geofence_map_canvas {
+  width: 100% !important;
+  height: 360px !important;
+  min-height: 360px !important;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.65rem;
+  overflow: hidden;
+  background: #e2e8f0;
+  position: relative;
+  z-index: 0;
+}
+
+.o_cems_geofence_map_canvas.o_cems_geofence_map_error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  color: #b45309;
+  font-size: 0.9rem;
+  text-align: center;
+  background: #fff7ed;
+}
+
+.o_cems_geofence_map_controls {
+  display: grid;
+  grid-template-columns: auto 1fr 6.5rem;
+  gap: 0.65rem 0.75rem;
+  align-items: center;
+}
+
+.o_cems_geofence_radius_label {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #475569;
+  white-space: nowrap;
+}
+
+.o_cems_geofence_radius_range {
+  width: 100%;
+}
+
+.o_cems_geofence_radius_number {
+  max-width: 6.5rem;
+}
+
+.o_cems_geofence_coords {
+  grid-column: 1 / -1;
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.o_cems_geofence_map .leaflet-container {
+  width: 100% !important;
+  height: 360px !important;
+  min-height: 360px !important;
+  font: inherit;
+  background: #dbe4ee;
+  z-index: 0;
+}
+
+.o_cems_geofence_map .leaflet-control-container {
+  z-index: 2;
+}
+
+@media (max-width: 575.98px) {
+  .o_cems_geofence_map_canvas,
+  .o_cems_geofence_map .leaflet-container {
+    height: 280px !important;
+    min-height: 280px !important;
+  }
+
+  .o_cems_geofence_map_controls {
+    grid-template-columns: 1fr;
+  }
+
+  .o_cems_geofence_radius_number {
+    max-width: none;
+  }
+}

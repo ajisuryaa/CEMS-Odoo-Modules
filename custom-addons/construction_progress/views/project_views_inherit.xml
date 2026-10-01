@@ -10,6 +10,17 @@
         <field name="arch" type="xml">
             <xpath expr="//notebook" position="inside">
                 <page string="CEMS / Geofence" name="cems_geofence">
+                    <group string="Site Geofence Map">
+                        <field name="geofence_map"
+                                 widget="cems_geofence_map"
+                                 nolabel="1"
+                                 colspan="2"
+                                 options="{
+                                     'lat_field': 'geofence_latitude',
+                                     'lng_field': 'geofence_longitude',
+                                     'radius_field': 'geofence_radius'
+                                 }"/>
+                    </group>
                     <group>
                         <group string="Site Geofence">
                             <field name="geofence_latitude" string="Geofence Latitude"/>

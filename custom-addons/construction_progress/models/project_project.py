@@ -48,6 +48,12 @@ class ProjectProject(models.Model):
         default=200.0,
         help='Allowed distance in meters from geofence center.',
     )
+    geofence_map = fields.Char(
+        string='Geofence Map',
+        copy=False,
+        help='Technical host for the Leaflet geofence map widget. '
+             'Coordinates are stored in latitude / longitude / radius.',
+    )
 
     # --- WBS validation ---
     wbs_validated = fields.Boolean(
