@@ -2,7 +2,7 @@
 
 **Status:** Implemented (slices A–G, Phase 1–2 menu scope) — 2026-09-27  
 **Addon version:** `construction_hrd` 19.0.1.7.0  
-**Produk:** CEMS — PT Dynatech Batam  
+**Produk:** CEMS — PT. Dynatech Rekayasa  
 **Odoo:** 19 Community  
 **Dokumen terkait:**  
 [AGENTS.md](./AGENTS.md) · [Portal_Spesification.md](../../../portal_cems/Portal_Spesification.md) ·  

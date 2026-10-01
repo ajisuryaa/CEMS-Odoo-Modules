@@ -1,6 +1,6 @@
-# PT Dynatech Batam — Acuan AI (CEMS)
+# PT. Dynatech Rekayasa — Acuan AI (CEMS)
 
-Dokumen ini adalah **indeks acuan untuk AI/agent** agar memahami proyek **Odoo Construction & Engineering Management Suite (CEMS)** milik PT Dynatech Batam tanpa membaca file Word asli.
+Dokumen ini adalah **indeks acuan untuk AI/agent** agar memahami proyek **Odoo Construction & Engineering Management Suite (CEMS)** milik PT. Dynatech Rekayasa tanpa membaca file Word asli.
 
 | File | Isi |
 |------|-----|

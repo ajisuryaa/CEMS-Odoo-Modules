@@ -1,11 +1,11 @@
 # CEMS — Construction & Engineering Management Suite
 
-Monorepo for **PT Dynatech Batam** custom Odoo addons (CEMS) and project documentation.
+Monorepo for **PT. Dynatech Rekayasa** custom Odoo addons (CEMS) and project documentation.
 
 | | |
 |---|---|
 | **Product** | Odoo Construction & Engineering Management Suite (**CEMS**) |
-| **Client** | PT Dynatech Batam |
+| **Client** | PT. Dynatech Rekayasa |
 | **Target** | **Odoo 19 Community** |
 | **License** | LGPL-3 (addons) |
 
@@ -115,4 +115,4 @@ Create an empty repository on GitHub first (no README/license if you already hav
 
 ## Authors
 
-Batemtech / PT Dynatech Batam
+Batemtech / PT. Dynatech Rekayasa

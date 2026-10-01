@@ -6,9 +6,9 @@
     'description': """
 CEMS Phase 1 — Construction Progress
 ====================================
-Foundation module for PT Dynatech Batam Construction & Engineering
+Foundation module for PT. Dynatech Rekayasa Construction & Engineering
 Management Suite (CEMS):
-
+R
 * CEMS security groups (res.groups)
 * Project geofence + Site Team assignment
 * Leaflet / OpenStreetMap geofence map widget
@@ -16,7 +16,7 @@ Management Suite (CEMS):
 * Project-level EVM (BAC, PV, EV, SPI, P_total)
 * Record rules for multi-project isolation
     """,
-    'author': 'Batemtech / PT Dynatech Batam',
+    'author': 'Batemtech / PT. Dynatech Rekayasa',
     'website': 'https://www.batemtech.com',
     'license': 'LGPL-3',
     'depends': [

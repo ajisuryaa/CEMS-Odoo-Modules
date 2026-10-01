@@ -1,11 +1,11 @@
-# AGENTS — PT Dynatech Batam (CEMS)
+# AGENTS — PT. Dynatech Rekayasa (CEMS)
 
-Baca file ini sebelum mengubah/membuat kode terkait proyek construction Odoo PT Dynatech Batam.
+Baca file ini sebelum mengubah/membuat kode terkait proyek construction Odoo PT. Dynatech Rekayasa.
 
 ## Identitas proyek
 
 - **Nama produk:** Odoo Construction & Engineering Management Suite (**CEMS**)
-- **Klien / konteks:** PT Dynatech Batam
+- **Klien / konteks:** PT. Dynatech Rekayasa
 - **Framework:** Odoo 19 Community
 - **Pola:** Custom addon di atas native Odoo — **jangan ubah core Odoo**
 

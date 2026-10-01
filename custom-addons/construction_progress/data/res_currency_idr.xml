@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!--
-        Indonesian Rupiah (IDR) for PT Dynatech Batam.
+        Indonesian Rupiah (IDR) for PT. Dynatech Rekayasa.
         Project BAC / PV / EV follow company_id.currency_id.
     -->
     <record id="base.IDR" model="res.currency">

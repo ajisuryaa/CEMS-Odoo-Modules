@@ -1,6 +1,6 @@
 # CEMS Construction Progress
 
-User guide for **`construction_progress`** — Phase 1 foundation of the Construction & Engineering Management Suite (CEMS) for PT Dynatech Batam.
+User guide for **`construction_progress`** — Phase 1 foundation of the Construction & Engineering Management Suite (CEMS) for PT. Dynatech Rekayasa.
 
 | | |
 |---|---|

@@ -1,6 +1,6 @@
 # Phase 2 — Site Workforce: `construction_hrd`
 
-**Landasan AI** Phase 2 CEMS (PT Dynatech Batam).  
+**Landasan AI** Phase 2 CEMS (PT. Dynatech Rekayasa).  
 Baca juga: [AGENTS.md](./AGENTS.md) · [07_roadmap.md](./07_roadmap.md) · [03_spesifikasi_fungsional.md](./03_spesifikasi_fungsional.md) §3.3 · [08_phase1_construction_progress.md](./08_phase1_construction_progress.md)
 
 | Item | Nilai |

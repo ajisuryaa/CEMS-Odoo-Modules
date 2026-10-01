@@ -1,6 +1,6 @@
 # Phase 1 — Core Foundation: `construction_progress`
 
-**Landasan AI** untuk mengerjakan Phase 1 CEMS (PT Dynatech Batam).  
+**Landasan AI** untuk mengerjakan Phase 1 CEMS (PT. Dynatech Rekayasa).  
 Baca juga: [AGENTS.md](./AGENTS.md) · [07_roadmap.md](./07_roadmap.md) · [03_spesifikasi_fungsional.md](./03_spesifikasi_fungsional.md) · [05_keamanan_rbac.md](./05_keamanan_rbac.md)
 
 | Item | Nilai |

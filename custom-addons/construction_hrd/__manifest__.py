@@ -6,7 +6,7 @@
     'description': """
 CEMS Phase 2 — Construction HRD
 ===============================
-Site workforce module for PT Dynatech Batam CEMS:
+Site workforce module for PT. Dynatech Rekayasa CEMS:
 
 * Website homepage (/) CEMS split login (Odoo DB auth)
 * Stock /web/login redirects to CEMS homepage (/)
@@ -22,7 +22,7 @@ Site workforce module for PT Dynatech Batam CEMS:
 * Daily Labor Report (DLR) — headcount by trade / hire type
 * Gate Pass foundation
     """,
-    'author': 'Batemtech / PT Dynatech Batam',
+    'author': 'Batemtech / PT. Dynatech Rekayasa',
     'website': 'https://www.batemtech.com',
     'license': 'LGPL-3',
     'depends': [
